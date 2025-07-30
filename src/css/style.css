@@ -1,0 +1,8 @@
+@font-face {
+    font-family: "american-captain";
+    src: url(../assets/AmericanCaptain-MdEY.otf);
+}
+
+h1 {
+    font-family: "american-captain";
+}
