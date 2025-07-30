@@ -57,7 +57,30 @@ describe("Ship class", () => {
             expect(ship.hitCount).toBe(4);
             ship.hit();
             expect(ship.hitCount).toBe(4);
-        })
+        });
 
+        test("last hit to ship sinks the ship", () => {
+            const ship = new Ship(3);
+            ship.hit();
+            ship.hit();
+            expect(ship.isSunk).toBe(false);
+            ship.hit();
+            expect(ship.isSunk).toBe(true);
+        })
+    })
+
+    describe("isSunk()", () => {
+        test("Unsunk ship returns false", () => {
+            const ship = new Ship(3);
+            expect(ship.checkIsSunk()).toBe(false);
+        });
+
+        test("Sunk ship returns true", () => {
+            const ship = new Ship(3);
+            ship.hit();
+            ship.hit();
+            ship.hit();
+            expect(ship.checkIsSunk()).toBe(true);
+        });
     })
 });

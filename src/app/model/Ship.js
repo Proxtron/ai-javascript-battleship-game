@@ -16,8 +16,17 @@ export default class Ship {
     }
 
     hit() {
+        if(this.hitCount === this.length - 1) {
+            this.hitCount++;
+            this.isSunk = true;
+        }
+
         if (this.hitCount < this.length) {
             this.hitCount++;
         }
+    }
+
+    checkIsSunk() {
+        return this.hitCount == this.length;
     }
 }
