@@ -69,10 +69,10 @@ describe("Ship class", () => {
         })
     })
 
-    describe("isSunk()", () => {
+    describe("isSunk getter", () => {
         test("Unsunk ship returns false", () => {
             const ship = new Ship(3);
-            expect(ship.checkIsSunk()).toBe(false);
+            expect(ship.isSunk).toBe(false);
         });
 
         test("Sunk ship returns true", () => {
@@ -80,7 +80,7 @@ describe("Ship class", () => {
             ship.hit();
             ship.hit();
             ship.hit();
-            expect(ship.checkIsSunk()).toBe(true);
+            expect(ship.isSunk).toBe(true);
         });
     })
 });

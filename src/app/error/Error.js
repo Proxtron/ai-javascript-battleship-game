@@ -4,3 +4,10 @@ export class InvalidShipLengthError extends Error {
         this.name = "InvalidShipLengthError";
     }
 }
+
+export class OutOfBoundsError extends Error {
+    constructor(row, column, length) {
+        super(`Placing ship with length: ${length} at row ${row} and column ${column} is out of bounds!`);
+        this.name = "OutOfBoundsError";
+    }
+}
