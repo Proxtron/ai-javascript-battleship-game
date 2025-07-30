@@ -1,5 +1,5 @@
-import { InvalidShipLengthError } from "../src/error/Error.js";
-import Ship from "../src/models/Ship.js";
+import { InvalidShipLengthError } from "../src/app/error/Error.js";
+import Ship from "../src/app/model/Ship.js";
 
 describe("Ship class", () => {
     describe("Ship() constuctor", () => {
@@ -36,7 +36,7 @@ describe("Ship class", () => {
             expect(() => new Ship([])).toThrow(InvalidShipLengthError);
             expect(() => new Ship({})).toThrow(InvalidShipLengthError);
         });
-        
+
     });
 
     describe("hit()", () => {
@@ -56,7 +56,7 @@ describe("Ship class", () => {
             ship.hit();
             expect(ship.hitCount).toBe(4);
             ship.hit();
-            expect(ship.hitCount).toBe(4);            
+            expect(ship.hitCount).toBe(4);
         })
 
     })

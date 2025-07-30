@@ -1,4 +1,4 @@
-import { InvalidShipLengthError } from "../error/Error";
+import { InvalidShipLengthError } from "../error/Error.js";
 
 export default class Ship {
     length;
@@ -6,7 +6,7 @@ export default class Ship {
     hitCount;
 
     constructor(length) {
-        if(length <= 0) {
+        if (length <= 0 || typeof length !== "number") {
             throw new InvalidShipLengthError("Ship length must be a positive integer")
         }
 
@@ -16,7 +16,7 @@ export default class Ship {
     }
 
     hit() {
-        if(this.hitCount < this.length) {
+        if (this.hitCount < this.length) {
             this.hitCount++;
         }
     }
