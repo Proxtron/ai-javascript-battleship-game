@@ -117,18 +117,66 @@ describe("placeShip()", () => {
 				gameBoard.placeShip(newShip, 11, 11, GameBoard.NORTH);
 			}).toThrow(OutOfBoundsError);
 		});
-
-		test("place ship in bounds but runs out of bounds throws OutOfBoundsError", () => {
-			
-		});
 	});
 
-    describe("place ship in bounds but runs out of bounds throws OutOfBoundsError", () => {
-        test("ship runs out of bounds south", () => {
-            expect(() => {
+	describe("place ship in bounds but runs out of bounds throws OutOfBoundsError", () => {
+		test("ship runs out of bounds south", () => {
+			expect(() => {
 				let newShip = new Ship(5);
-				gameBoard.placeShip(newShip, 10, 5, GameBoard.SOUTH);
-			});
-        })
-    });
+				gameBoard.placeShip(newShip, 9, 5, GameBoard.SOUTH);
+			}).toThrow(OutOfBoundsError);
+		});
+
+		test("ship runs out of bounds east", () => {
+			expect(() => {
+				let newShip = new Ship(5);
+				gameBoard.placeShip(newShip, 4, 9, GameBoard.EAST);
+			}).toThrow(OutOfBoundsError);
+		})
+
+		test("ship runs out of bounds west", () => {
+			expect(() => {
+				let newShip = new Ship(5);
+				gameBoard.placeShip(newShip, 4, 0, GameBoard.WEST);
+			}).toThrow(OutOfBoundsError);
+		})
+
+		test("ship runs out of bounds north", () => {
+			expect(() => {
+				let newShip = new Ship(5);
+				gameBoard.placeShip(newShip, 0, 4, GameBoard.NORTH);
+			}).toThrow(OutOfBoundsError);
+		})
+	});
+
+	describe("place ship with length 1 at the edge of grid facing outside of grid", () => {
+		let newShip;
+		beforeEach(() => {
+			newShip = new Ship(1);
+		})
+
+		test("ship on north edge facing north", () => {
+			expectedGrid[0][3] = [newShip, false];
+			gameBoard.placeShip(newShip, 0, 3, GameBoard.NORTH);
+			expect(gameBoard.grid).toEqual(expectedGrid);
+		})
+
+		test("ship on east edge facing east", () => {
+			expectedGrid[3][9] = [newShip, false];
+			gameBoard.placeShip(newShip, 3, 9, GameBoard.EAST)
+			expect(gameBoard.grid).toEqual(expectedGrid);
+		})
+
+		test("ship on south edge facing south", () => {
+			expectedGrid[9][3] = [newShip, false];
+			gameBoard.placeShip(newShip, 9, 3, GameBoard.SOUTH)
+			expect(gameBoard.grid).toEqual(expectedGrid);
+		})
+
+		test("ship on west edge facing west", () => {
+			expectedGrid[3][0] = [newShip, false];
+			gameBoard.placeShip(newShip, 3, 0, GameBoard.WEST)
+			expect(gameBoard.grid).toEqual(expectedGrid);
+		})
+	});
 });

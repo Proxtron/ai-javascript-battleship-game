@@ -40,25 +40,25 @@ export default class GameBoard {
 
 		switch (direction) {
 			case GameBoard.NORTH:
-                if((row - ship.length) < 0) throw new OutOfBoundsError(row, column, ship.length);
+                if((row - ship.length) + 1 < 0) throw new OutOfBoundsError(row, column, ship.length);
 				for (let i = 0; i < ship.length; i++) {
 					this.#updateGridCell(row - i, column, ship, false);
 				}
 				break;
 			case GameBoard.EAST:
-                if((column + ship.length) > 10) throw new OutOfBoundsError(row, column, ship.length);
+                if((column + ship.length) > this.sideLength) throw new OutOfBoundsError(row, column, ship.length);
 				for (let i = 0; i < ship.length; i++) {
 					this.#updateGridCell(row, column + i, ship, false);
 				}
 				break;
 			case GameBoard.SOUTH:
-                if((row + ship.length) > 10) throw new OutOfBoundsError(row, column, ship.length);
+                if((row + ship.length) > this.sideLength) throw new OutOfBoundsError(row, column, ship.length);
 				for (let i = 0; i < ship.length; i++) {
 					this.#updateGridCell(row + i, column, ship, false);
 				}
 				break;
 			case GameBoard.WEST:
-                if((column + 1 - ship.length) < 0) throw new OutOfBoundsError(row, column, ship.length);
+                if((column - ship.length) + 1 < 0) throw new OutOfBoundsError(row, column, ship.length);
 				for (let i = 0; i < ship.length; i++) {
 					this.#updateGridCell(row, column - i, ship, false);
 				}
