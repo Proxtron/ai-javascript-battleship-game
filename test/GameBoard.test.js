@@ -1,6 +1,16 @@
-import GameBoard from "../src/app/model/GameBoard";
-import Ship from "../src/app/model/Ship";
-import { OutOfBoundsError } from "../src/app/error/Error";
+import GameBoard from "../src/app/model/GameBoard.js";
+import Ship from "../src/app/model/Ship.js";
+import { OutOfBoundsError } from "../src/app/error/Error.js";
+
+jest.mock("../src/app/model/Ship.js", () => {
+	return jest.fn().mockImplementation((length) => {
+		return {
+			length: length,
+			hit: jest.fn(),
+			isSunk: false,
+		};
+	});
+});
 
 let gameBoard;
 let expectedGrid;
@@ -29,6 +39,7 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 5, 3, GameBoard.EAST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		});
 
 		test("places ship on [0, 0]", () => {
@@ -36,6 +47,7 @@ describe("placeShip()", () => {
 			expectedGrid[0][0] = [newShip, false];
 			gameBoard.placeShip(newShip, 0, 0, GameBoard.EAST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		});
 	});
 
@@ -47,6 +59,7 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.EAST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		});
 
 		test("place ship length 4", () => {
@@ -58,6 +71,7 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.EAST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		});
 	});
 
@@ -70,6 +84,7 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.NORTH);
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		});
 
 		test("place ship facing east", () => {
@@ -80,6 +95,7 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.EAST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		});
 
 		test("place ship facing south", () => {
@@ -90,6 +106,7 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.SOUTH);
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		});
 
 		test("place ship facing west", () => {
@@ -100,6 +117,7 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.WEST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		});
 	});
 
@@ -159,24 +177,127 @@ describe("placeShip()", () => {
 			expectedGrid[0][3] = [newShip, false];
 			gameBoard.placeShip(newShip, 0, 3, GameBoard.NORTH);
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		})
 
 		test("ship on east edge facing east", () => {
 			expectedGrid[3][9] = [newShip, false];
 			gameBoard.placeShip(newShip, 3, 9, GameBoard.EAST)
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		})
 
 		test("ship on south edge facing south", () => {
 			expectedGrid[9][3] = [newShip, false];
 			gameBoard.placeShip(newShip, 9, 3, GameBoard.SOUTH)
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		})
 
 		test("ship on west edge facing west", () => {
 			expectedGrid[3][0] = [newShip, false];
 			gameBoard.placeShip(newShip, 3, 0, GameBoard.WEST)
 			expect(gameBoard.grid).toEqual(expectedGrid);
+			expect(gameBoard.ships).toContain(newShip);
 		})
+	});
+});
+
+describe("receiveAttack()", () => {
+	let newShip;
+	beforeEach(() => {
+		newShip = new Ship(2);
+	});
+
+	describe("changes different points from unhit to hit", () => {
+		test("attacking [3, 3] changes to hit", () => {
+			expectedGrid[3][3][1] = true;
+			gameBoard.receiveAttack(3, 3);
+			expect(gameBoard.grid).toEqual(expectedGrid);
+		});
+
+		test("attacking [2, 9] changes to hit", () => {
+			expectedGrid[2][9][1] = true;
+			gameBoard.receiveAttack(2, 9);
+			expect(gameBoard.grid).toEqual(expectedGrid);
+		});
+	});
+
+	describe("calls ship.hit() when attacking a cell with a ship in it", () => {
+		test("it calls the hit method on the ship in the attacked cell", () => {
+			gameBoard.placeShip(newShip, 3, 3, GameBoard.SOUTH);
+			gameBoard.receiveAttack(3, 3);
+			
+			expect(newShip.hit).toHaveBeenCalled();
+		});
+	});
+
+
+	test("hitting an already hit point doesn't change anything in that point", () => {
+		gameBoard.placeShip(newShip, 3, 3, GameBoard.SOUTH);
+		gameBoard.receiveAttack(3, 3);
+		gameBoard.receiveAttack(3, 3);
+
+		expectedGrid[3][3] = [newShip, true];
+		expectedGrid[4][3] = [newShip, false];
+
+		expect(gameBoard.grid).toEqual(expectedGrid);
+	});
+
+	describe("targeting a point out of bounds throws OutOfBoundsError", () => {
+		test("attacking [-1, 0] throws", () => {
+			expect(() => gameBoard.receiveAttack(-1, 0)).toThrow(OutOfBoundsError);
+		})
+		test("attacking [10, 0] throws", () => {
+			expect(() => gameBoard.receiveAttack(10, 0)).toThrow(OutOfBoundsError);
+		})
+	})
+});
+
+describe("missedAttacks getter", () => {
+	test("no missed attacks", () => {
+		expect(gameBoard.missedAttacks).toEqual([]);
+	});
+
+	test("one missed attack", () => {
+		gameBoard.receiveAttack(0, 0);
+		expect(gameBoard.missedAttacks).toEqual([[0, 0]]);
+	});
+
+	test("multiple missed attacks", () => {
+		gameBoard.receiveAttack(0, 0);
+		gameBoard.receiveAttack(1, 1);
+		gameBoard.receiveAttack(1, 2);
+		expect(gameBoard.missedAttacks).toEqual([[0, 0], [1, 1], [1, 2]]);
+	});
+
+	test("hitting a ship doesn't add to missedAttacks", () => {
+		gameBoard.placeShip(new Ship(2), 3, 3, GameBoard.SOUTH);
+		gameBoard.receiveAttack(3, 3);
+		gameBoard.receiveAttack(9, 9);
+		gameBoard.receiveAttack(8, 8);
+		expect(gameBoard.missedAttacks).toEqual([[8, 8], [9, 9]]);
+	})
+});
+
+describe("allShipsSunk getter", () => {
+	test("no ships", () => {
+		expect(gameBoard.allShipsSunk).toBe(true);
+	});
+
+	test("one ship, none sunk", () => {
+		const newShip = new Ship(2);
+		gameBoard.placeShip(newShip, 3, 3, GameBoard.SOUTH);
+		gameBoard.receiveAttack(3, 3);
+		expect(gameBoard.allShipsSunk).toBe(false);
+	});
+
+	test("one ship, one sunk", () => {
+		const newShip = new Ship(2);
+		gameBoard.placeShip(newShip, 3, 3, GameBoard.SOUTH);
+		gameBoard.receiveAttack(3, 3);
+		gameBoard.receiveAttack(4, 3);
+		newShip.isSunk = true;
+		expect(gameBoard.allShipsSunk).toBe(true);
 	});
 });

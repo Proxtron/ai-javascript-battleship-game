@@ -1,9 +1,10 @@
-import { OutOfBoundsError } from "../error/Error";
+import { OutOfBoundsError } from "../error/Error.js";
 
 export default class GameBoard {
 	grid = [];
 	sideLength = 10;
 	INITAL_CELL_STATE = [null, false];
+	ships = [];
 
 	static NORTH = 0;
 	static EAST = 1;
@@ -35,7 +36,7 @@ export default class GameBoard {
 			row > this.sideLength - 1 ||
 			column > this.sideLength - 1
 		) {
-			throw new OutOfBoundsError(row, column, ship.length);
+			throw new OutOfBoundsError(row, column);
 		}
 
 		switch (direction) {
@@ -64,5 +65,41 @@ export default class GameBoard {
 				}
 				break;
 		}
+
+		this.ships.push(ship);
+	}
+
+	receiveAttack(row, column) {
+		if(row < 0 || column < 0 || row > this.sideLength - 1 || column > this.sideLength - 1) {
+			throw new OutOfBoundsError(row, column);
+		}
+
+		const targetedCell = this.grid[row][column];
+		if(targetedCell[0] !== null) {
+			targetedCell[0].hit();
+		}
+
+		targetedCell[1] = true;
+	}
+
+	get missedAttacks() {
+		const missedAttacks = [];
+		for(let i = 0; i < this.sideLength; i++) {
+			for(let j = 0; j < this.sideLength; j++) {
+				const cell = this.grid[i][j];
+				if (cell[0] === null && cell[1] === true) {
+					missedAttacks.push([i, j]);
+				}
+			}
+		}
+
+		return missedAttacks;
+	}
+
+	get allShipsSunk() {
+		for(const ship of this.ships) {
+			if(!ship.isSunk) return false;
+		}
+		return true;
 	}
 }

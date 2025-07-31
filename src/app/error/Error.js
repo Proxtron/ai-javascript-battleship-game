@@ -7,7 +7,14 @@ export class InvalidShipLengthError extends Error {
 
 export class OutOfBoundsError extends Error {
     constructor(row, column, length) {
-        super(`Placing ship with length: ${length} at row ${row} and column ${column} is out of bounds!`);
-        this.name = "OutOfBoundsError";
+        if(!length) {
+            super(`Point [${row}, ${column}] is out of bounds!`);
+            this.name = "OutOfBoundsError";
+        } else {
+            super(`Placing ship with length: ${length} at row ${row} and column ${column} is out of bounds!`);
+            this.name = "OutOfBoundsError";
+        }
+
+        
     }
 }
