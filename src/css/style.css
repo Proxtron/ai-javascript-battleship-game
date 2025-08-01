@@ -3,6 +3,64 @@
     src: url(../assets/AmericanCaptain-MdEY.otf);
 }
 
-h1 {
+:root {
+    /* Backgrounds */
+    --color-bg-primary: #2A3B4C; /* Deep Ocean Blue-Grey */
+    --color-bg-secondary: #4A5568; /* Charcoal Grey (for cards, UI elements) */
+
+    /* Text & Content */
+    --color-text-primary: #D0D6E2; /* Off-White/Light Grey */
+
+    /* Accents & Interactivity */
+    --color-accent-primary: #6CC3D5; /* Bright Aqua Blue (for interactive elements, radar) */
+    --color-accent-secondary: #FF6F61; /* Coral Red (for warnings, actions) */
+
+    /* Subtle Details */
+    --color-detail-subtle: #5E7A90; /* Muted Blue-Grey (for lines, borders) */
+
+    --cell-size: 40px;
+}
+
+body {
+    background-color: var(--color-bg-primary);
+}
+
+header {
+    display: flex;
+}
+
+.game-title {
+    margin:0 auto;
+}
+
+h1, h2, h3 {
     font-family: "american-captain";
+}
+h1 {
+    
+    color:var(--color-text-primary);
+}
+
+.game-board-container {
+    display:flex;
+    justify-content: space-around;
+}
+.game-board {
+    display:grid;
+    grid-template-rows: repeat(10, var(--cell-size));
+    grid-template-columns: repeat(10, var(--cell-size));
+    gap:2px;
+}
+
+.grid-cell {
+    border: 1px solid var(--color-detail-subtle);
+    border-radius: 4.5px;
+}
+
+.grid-cell:hover {
+    background-color: var(--color-accent-primary);
+}
+
+.ship-occupied {
+    background-color: var(--color-bg-secondary)
 }
