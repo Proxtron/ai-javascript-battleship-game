@@ -3,6 +3,10 @@
     src: url(../assets/AmericanCaptain-MdEY.otf);
 }
 
+@font-face {
+    font-family: "special-elite";
+    src: url(../assets/SpecialElite-Regular.ttf);
+}
 :root {
     /* Backgrounds */
     --color-bg-primary: #2A3B4C; /* Deep Ocean Blue-Grey */
@@ -22,6 +26,7 @@
 }
 
 body {
+    font-family: "special-elite";
     background-color: var(--color-bg-primary);
 }
 
@@ -33,18 +38,39 @@ header {
     margin:0 auto;
 }
 
+h1, h2, h3, p {
+    color:var(--color-text-primary);
+}
+
 h1, h2, h3 {
     font-family: "american-captain";
-}
-h1 {
     
-    color:var(--color-text-primary);
+}
+
+h1 {
+    font-size:3rem;
+}
+
+h2 {
+    font-size: 2.5rem;
+}
+
+h3 {
+    font-size: 2rem;
+}
+
+p {
+    font-size:1rem;
 }
 
 .game-board-container {
     display:flex;
     justify-content: space-around;
+    width:75%;
+    margin:0 auto;
+    padding-top:5rem;
 }
+
 .game-board {
     display:grid;
     grid-template-rows: repeat(10, var(--cell-size));
@@ -55,12 +81,25 @@ h1 {
 .grid-cell {
     border: 1px solid var(--color-detail-subtle);
     border-radius: 4.5px;
-}
-
-.grid-cell:hover {
-    background-color: var(--color-accent-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .ship-occupied {
     background-color: var(--color-bg-secondary)
+}
+
+.grid-cell p {
+    font-size:2rem;
+    padding-top: .5rem;
+}
+
+.disabled-game-board {
+    opacity: .5;
+}
+
+.disabled-game-board .grid-cell {
+    cursor:not-allowed
 }

@@ -1,21 +1,44 @@
 import Player from "../model/Player";
 import GameBoard from "../model/GameBoard";
 import Ship from "../model/Ship";
-import GameBoardView from "../view/GameBoardView";
 
-const player1 = new Player(Player.REAL_TYPE);
-const player2 = new Player(Player.BOT_TYPE);
+const game = {
+    player1: null,
+    player2: null,
+    currentTurn: null,
 
-player1.gameBoard.placeShip(new Ship(5), 1, 3, GameBoard.EAST);
-player1.gameBoard.placeShip(new Ship(4), 1, 0, GameBoard.SOUTH);
-player1.gameBoard.placeShip(new Ship(3), 9, 1, GameBoard.EAST);
-player1.gameBoard.placeShip(new Ship(3), 3, 8, GameBoard.WEST);
-player1.gameBoard.placeShip(new Ship(2), 6, 3, GameBoard.EAST);
+    startGame() {
 
-player2.gameBoard.placeShip(new Ship(5), 1, 5, GameBoard.EAST);
-player2.gameBoard.placeShip(new Ship(4), 1, 0, GameBoard.SOUTH);
-player2.gameBoard.placeShip(new Ship(3), 9, 1, GameBoard.EAST);
-player2.gameBoard.placeShip(new Ship(3), 3, 8, GameBoard.WEST);
-player2.gameBoard.placeShip(new Ship(2), 6, 3, GameBoard.EAST);
+        this.player1 = new Player(Player.REAL_TYPE);
+        this.player2 = new Player(Player.BOT_TYPE);
+        this.currentTurn = this.player1;
 
-document.getElementById("game-board-container").append(GameBoardView(player1.gameBoard.grid), GameBoardView(player2.gameBoard.grid));
+        this.player1.gameBoard.placeShip(new Ship(5), 1, 3, GameBoard.EAST);
+        this.player1.gameBoard.placeShip(new Ship(4), 1, 0, GameBoard.SOUTH);
+        this.player1.gameBoard.placeShip(new Ship(3), 9, 1, GameBoard.EAST);
+        this.player1.gameBoard.placeShip(new Ship(3), 3, 8, GameBoard.WEST);
+        this.player1.gameBoard.placeShip(new Ship(2), 6, 3, GameBoard.EAST);
+
+        this.player2.gameBoard.placeShip(new Ship(5), 1, 5, GameBoard.EAST);
+        this.player2.gameBoard.placeShip(new Ship(4), 1, 0, GameBoard.SOUTH);
+        this.player2.gameBoard.placeShip(new Ship(3), 9, 1, GameBoard.EAST);
+        this.player2.gameBoard.placeShip(new Ship(3), 3, 8, GameBoard.WEST);
+        this.player2.gameBoard.placeShip(new Ship(2), 6, 3, GameBoard.EAST);
+    },
+
+    resetGame() {
+        this.player1 = null;
+        this.player2 = null;
+        this.currentTurn = null;
+    },
+
+    switchTurn() {
+        if(this.currentTurn === this.player1) {
+            this.currentTurn = this.player2;
+        } else {
+            this.currentTurn = this.player1;
+        }
+    }
+}
+
+export default game;
