@@ -3,6 +3,103 @@
     src: url(../assets/AmericanCaptain-MdEY.otf);
 }
 
-h1 {
+@font-face {
+    font-family: "special-elite";
+    src: url(../assets/SpecialElite-Regular.ttf);
+}
+:root {
+    /* Backgrounds */
+    --color-bg-primary: #2A3B4C; /* Deep Ocean Blue-Grey */
+    --color-bg-secondary: #4A5568; /* Charcoal Grey (for cards, UI elements) */
+
+    /* Text & Content */
+    --color-text-primary: #D0D6E2; /* Off-White/Light Grey */
+
+    /* Accents & Interactivity */
+    --color-accent-primary: #6CC3D5; /* Bright Aqua Blue (for interactive elements, radar) */
+    --color-accent-secondary: #FF6F61; /* Coral Red (for warnings, actions) */
+
+    /* Subtle Details */
+    --color-detail-subtle: #5E7A90; /* Muted Blue-Grey (for lines, borders) */
+
+    --cell-size: 40px;
+}
+
+body {
+    font-family: "special-elite";
+    background-color: var(--color-bg-primary);
+}
+
+header {
+    display: flex;
+}
+
+.game-title {
+    margin:0 auto;
+}
+
+h1, h2, h3, p {
+    color:var(--color-text-primary);
+}
+
+h1, h2, h3 {
     font-family: "american-captain";
+    
+}
+
+h1 {
+    font-size:3rem;
+}
+
+h2 {
+    font-size: 2.5rem;
+}
+
+h3 {
+    font-size: 2rem;
+}
+
+p {
+    font-size:1rem;
+}
+
+.game-board-container {
+    display:flex;
+    justify-content: space-around;
+    width:75%;
+    margin:0 auto;
+    padding-top:5rem;
+}
+
+.game-board {
+    display:grid;
+    grid-template-rows: repeat(10, var(--cell-size));
+    grid-template-columns: repeat(10, var(--cell-size));
+    gap:2px;
+}
+
+.grid-cell {
+    border: 1px solid var(--color-detail-subtle);
+    border-radius: 4.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ship-occupied {
+    background-color: var(--color-bg-secondary)
+}
+
+.grid-cell p {
+    font-size:2rem;
+    padding-top: .5rem;
+}
+
+.disabled-game-board {
+    opacity: .5;
+}
+
+.disabled-game-board .grid-cell {
+    cursor:not-allowed
 }
