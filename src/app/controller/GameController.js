@@ -38,6 +38,12 @@ const game = {
         } else {
             this.currentTurn = this.player1;
         }
+    },
+
+    hitCell(row, col) {
+        const opponent = this.currentTurn === this.player1 ? this.player2 : this.player1;
+        opponent.gameBoard.receiveAttack(row, col);
+        this.switchTurn();
     }
 }
 

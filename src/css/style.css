@@ -22,7 +22,7 @@
     /* Subtle Details */
     --color-detail-subtle: #5E7A90; /* Muted Blue-Grey (for lines, borders) */
 
-    --cell-size: 40px;
+    --cell-size: 45px;
 }
 
 body {
@@ -63,12 +63,15 @@ p {
     font-size:1rem;
 }
 
+main {
+    width:75%;
+    margin:0 auto;
+    padding-top:3rem;
+}
 .game-board-container {
     display:flex;
     justify-content: space-around;
-    width:75%;
-    margin:0 auto;
-    padding-top:5rem;
+    
 }
 
 .game-board {
@@ -102,4 +105,32 @@ p {
 
 .disabled-game-board .grid-cell {
     cursor:not-allowed
+}
+
+.player-emojis {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+}
+
+.player-emoji {
+    font-size:3rem;
+}
+
+.x-mark {
+    font-weight: 600;
+}
+
+.light-x-mark {
+    opacity: .6;
+}
+
+.hit-x-mark {
+    color:var(--color-accent-secondary);
+}
+
+.ship-destroyed {
+    background-color: var(--color-accent-secondary);
 }
