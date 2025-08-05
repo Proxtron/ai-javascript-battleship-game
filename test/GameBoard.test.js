@@ -39,7 +39,6 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 5, 3, GameBoard.EAST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
 		});
 
 		test("places ship on [0, 0]", () => {
@@ -47,7 +46,6 @@ describe("placeShip()", () => {
 			expectedGrid[0][0] = [newShip, false];
 			gameBoard.placeShip(newShip, 0, 0, GameBoard.EAST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
 		});
 	});
 
@@ -59,7 +57,6 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.EAST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
 		});
 
 		test("place ship length 4", () => {
@@ -71,7 +68,6 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.EAST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
 		});
 	});
 
@@ -84,7 +80,6 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.NORTH);
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
 		});
 
 		test("place ship facing east", () => {
@@ -95,7 +90,6 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.EAST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
 		});
 
 		test("place ship facing south", () => {
@@ -106,7 +100,6 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.SOUTH);
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
 		});
 
 		test("place ship facing west", () => {
@@ -117,7 +110,6 @@ describe("placeShip()", () => {
 
 			gameBoard.placeShip(newShip, 3, 2, GameBoard.WEST);
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
 		});
 	});
 
@@ -177,28 +169,60 @@ describe("placeShip()", () => {
 			expectedGrid[0][3] = [newShip, false];
 			gameBoard.placeShip(newShip, 0, 3, GameBoard.NORTH);
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
 		})
 
 		test("ship on east edge facing east", () => {
 			expectedGrid[3][9] = [newShip, false];
 			gameBoard.placeShip(newShip, 3, 9, GameBoard.EAST)
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
 		})
 
 		test("ship on south edge facing south", () => {
 			expectedGrid[9][3] = [newShip, false];
 			gameBoard.placeShip(newShip, 9, 3, GameBoard.SOUTH)
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
 		})
 
 		test("ship on west edge facing west", () => {
 			expectedGrid[3][0] = [newShip, false];
 			gameBoard.placeShip(newShip, 3, 0, GameBoard.WEST)
 			expect(gameBoard.grid).toEqual(expectedGrid);
-			expect(gameBoard.ships).toContain(newShip);
+		})
+	});
+
+	describe("placing ship adds to the ships array", () => {
+		test("add length 2 ship at [0, 0] east", () => {
+			let newShip = new Ship(2);
+			gameBoard.placeShip(newShip, 0, 0, GameBoard.EAST);
+			expect(gameBoard.ships).toEqual([
+				{
+					shipObject: newShip,
+					shipOriginX: 0,
+					shipOriginY: 0,
+					shipDirection: GameBoard.EAST,
+				}
+			]);
+		});
+
+		test("adding two ships", () => {
+			let newShip = new Ship(2);
+			gameBoard.placeShip(newShip, 0, 0, GameBoard.EAST);
+			let otherNewShip = new Ship(3);
+			gameBoard.placeShip(otherNewShip, 5, 5, GameBoard.SOUTH);
+			expect(gameBoard.ships).toEqual([
+				{
+					shipObject: newShip,
+					shipOriginX: 0,
+					shipOriginY: 0,
+					shipDirection: GameBoard.EAST,
+				},
+				{
+					shipObject: otherNewShip,
+					shipOriginX: 5,
+					shipOriginY: 5,
+					shipDirection: GameBoard.SOUTH,
+				},
+			]);
 		})
 	});
 });
@@ -227,7 +251,7 @@ describe("receiveAttack()", () => {
 		test("it calls the hit method on the ship in the attacked cell", () => {
 			gameBoard.placeShip(newShip, 3, 3, GameBoard.SOUTH);
 			gameBoard.receiveAttack(3, 3);
-			
+
 			expect(newShip.hit).toHaveBeenCalled();
 		});
 	});
@@ -301,3 +325,44 @@ describe("allShipsSunk getter", () => {
 		expect(gameBoard.allShipsSunk).toBe(true);
 	});
 });
+
+describe("hasShipAt()", () => {
+	test("check an empty cell", () => {
+		expect(gameBoard.hasShipAt(0, 0)).toBe(false);
+	});
+
+	test("check an occupied cell", () => {
+		gameBoard.placeShip(new Ship(1), 0, 0, GameBoard.EAST);
+		expect(gameBoard.hasShipAt(0, 0)).toBe(true);
+	})
+
+	describe("out of bounds point throws OutOfBoundsError", () => {
+		test("checking [0, -1] throws", () => {
+			expect(() => gameBoard.hasShipAt(-1, 0)).toThrow(OutOfBoundsError);
+		});
+		test("checking [0, 10] throws", () => {
+			expect(() => gameBoard.hasShipAt(10, 0)).toThrow(OutOfBoundsError);
+		});
+	})
+});
+
+describe("isAttackedAt()", () => {
+	test("unattacked cell returns false", () => {
+		expect(gameBoard.isAttackedAt(0, 0)).toBe(false);
+	});
+
+	test("attacked cell returns true", () => {
+		gameBoard.placeShip(new Ship(1), 0, 0, GameBoard.EAST);
+		gameBoard.receiveAttack(0, 0);
+		expect(gameBoard.isAttackedAt(0, 0)).toBe(true);
+	});
+
+	describe("out of bounds point throws OutOfBoundsError", () => {
+		test("checking [0, -1] throws", () => {
+			expect(() => gameBoard.isAttackedAt(-1, 0)).toThrow(OutOfBoundsError);
+		});
+		test("checking [0, 10] throws", () => {
+			expect(() => gameBoard.isAttackedAt(10, 0)).toThrow(OutOfBoundsError);
+		});
+	})
+})

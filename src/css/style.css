@@ -128,5 +128,9 @@ main {
 }
 
 .hit-x-mark {
-    color:var(--color-accent-secondary)
+    color:var(--color-accent-secondary);
+}
+
+.ship-destroyed {
+    background-color: var(--color-accent-secondary);
 }

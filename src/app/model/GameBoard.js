@@ -29,7 +29,7 @@ export default class GameBoard {
 		this.grid[row][column] = [occupyingShip, isAttacked];
 	}
 
-	placeShip(ship, row, column, direction) {
+	#checkOutOfBounds(row, column) {
 		if (
 			row < 0 ||
 			column < 0 ||
@@ -38,6 +38,10 @@ export default class GameBoard {
 		) {
 			throw new OutOfBoundsError(row, column);
 		}
+	}
+
+	placeShip(ship, row, column, direction) {
+		this.#checkOutOfBounds(row, column);
 
 		switch (direction) {
 			case GameBoard.NORTH:
@@ -66,13 +70,16 @@ export default class GameBoard {
 				break;
 		}
 
-		this.ships.push(ship);
+		this.ships.push({
+			shipObject: ship,
+			shipOriginX: column,
+			shipOriginY: row,
+			shipDirection: direction,
+		});
 	}
 
 	receiveAttack(row, column) {
-		if(row < 0 || column < 0 || row > this.sideLength - 1 || column > this.sideLength - 1) {
-			throw new OutOfBoundsError(row, column);
-		}
+		this.#checkOutOfBounds(row, column);
 
 		const targetedCell = this.grid[row][column];
 		if(targetedCell[0] !== null) {
@@ -98,8 +105,27 @@ export default class GameBoard {
 
 	get allShipsSunk() {
 		for(const ship of this.ships) {
-			if(!ship.isSunk) return false;
+			if(!ship.shipObject.isSunk) return false;
 		}
 		return true;
+	}
+
+	hasShipAt(row, column) {
+		this.#checkOutOfBounds(row, column);
+		return this.grid[row][column][0] !== null;
+	}
+
+	isAttackedAt(row, column) {
+		this.#checkOutOfBounds(row, column);
+		return this.grid[row][column][1];
+	}
+
+	shipSunkAt(row, column) {
+		this.#checkOutOfBounds(row, column);
+		if(this.grid[row][column][0] === null) {
+			return false;
+		}
+
+		return this.grid[row][column][0].isSunk;
 	}
 }
