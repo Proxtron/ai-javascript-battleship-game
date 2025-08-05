@@ -4,11 +4,19 @@ import { OutOfBoundsError } from "../src/app/error/Error.js";
 
 jest.mock("../src/app/model/Ship.js", () => {
 	return jest.fn().mockImplementation((length) => {
-		return {
+		let hitCount = 0;
+		const mockShip = {
 			length: length,
-			hit: jest.fn(),
-			isSunk: false,
+			hit: jest.fn(() => {
+				if (hitCount < length) {
+					hitCount++;
+				}
+			}),
+			get isSunk() {
+				return hitCount === length;
+			},
 		};
+		return mockShip;
 	});
 });
 
@@ -321,7 +329,6 @@ describe("allShipsSunk getter", () => {
 		gameBoard.placeShip(newShip, 3, 3, GameBoard.SOUTH);
 		gameBoard.receiveAttack(3, 3);
 		gameBoard.receiveAttack(4, 3);
-		newShip.isSunk = true;
 		expect(gameBoard.allShipsSunk).toBe(true);
 	});
 });
@@ -365,4 +372,29 @@ describe("isAttackedAt()", () => {
 			expect(() => gameBoard.isAttackedAt(10, 0)).toThrow(OutOfBoundsError);
 		});
 	})
+})
+
+describe("shipSunkAt()", () => {
+	test("no ship, unattacked cell returns false", () => {
+		expect(gameBoard.shipSunkAt(0, 0)).toBe(false);
+	});
+
+	test("ship in cell, but unattacked returns false", () => {
+		gameBoard.placeShip(new Ship(1), 0, 0, GameBoard.EAST);
+		expect(gameBoard.shipSunkAt(0, 0)).toBe(false);
+	});
+
+	test("ship in cell, attacked, but not sunk returns false", () => {
+		gameBoard.placeShip(new Ship(2), 0, 0, GameBoard.EAST);
+		gameBoard.receiveAttack(0, 0);
+		expect(gameBoard.shipSunkAt(0, 0)).toBe(false);
+	});
+
+	test("ship in cell, is sunk and returns true", () => {
+		gameBoard.placeShip(new Ship(2), 0, 0, GameBoard.EAST);
+		gameBoard.receiveAttack(0, 0);
+		gameBoard.receiveAttack(0, 1);
+		
+		expect(gameBoard.shipSunkAt(0, 0)).toBe(true);
+	});
 })
