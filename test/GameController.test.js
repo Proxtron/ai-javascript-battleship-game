@@ -1,6 +1,7 @@
 import game from "../src/app/controller/GameController";
 import Player from "../src/app/model/Player";
 import Ship from "../src/app/model/Ship";
+// import GameBoard from "../src/app/model/GameBoard";
 
 jest.mock("../src/app/model/Ship", () => {
     return jest.fn().mockImplementation((length) => {
@@ -9,20 +10,33 @@ jest.mock("../src/app/model/Ship", () => {
         }
     });
 });
+
 jest.mock("../src/app/model/Player", () => {
     return jest.fn().mockImplementation((type) => {
         return {
             type: type,
             gameBoard: {
-                placeShip: jest.fn()
+                placeShip: jest.fn(),
+                receiveAttack: jest.fn()
             }
+
         }
     })
 });
 
+// jest.mock("../src/app/model/GameBoard", () => {
+//     return jest.fn().mockImplementation(() => {
+//         return {
+//             placeShip: jest.fn(),
+//             receiveAttack: jest.fn()
+//         }
+//     })
+// })
+
 beforeEach(() => {
     Player.mockClear();
     Ship.mockClear();
+    // GameBoard.mockClear();
     game.resetGame();
     game.startGame();
 })
@@ -71,4 +85,12 @@ describe("game.switchTurn()", () => {
         game.switchTurn();
         expect(game.currentTurn).toBe(game.player1);
     })
+})
+
+describe("game.hitCell()", () => {
+    test("calls receiveAttack", () => {
+        game.hitCell(0, 0);
+        expect(game.player2.gameBoard.receiveAttack).toHaveBeenCalledTimes(1);
+    });
+
 })
