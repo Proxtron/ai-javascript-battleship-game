@@ -2,6 +2,7 @@ import game from "../src/app/controller/GameController";
 import Player from "../src/app/model/Player";
 import Ship from "../src/app/model/Ship";
 // import GameBoard from "../src/app/model/GameBoard";
+import { PlayersTurnError } from "../src/app/error/Error";
 
 jest.mock("../src/app/model/Ship", () => {
     return jest.fn().mockImplementation((length) => {
@@ -93,4 +94,11 @@ describe("game.hitCell()", () => {
         expect(game.player2.gameBoard.receiveAttack).toHaveBeenCalledTimes(1);
     });
 
+})
+
+describe("game.computerAttack()", () => {
+    test("calling computerAttack when its the players turn throws PlayersTurnError", () => {
+        game.currentTurn = game.player1;
+        expect(() => game.computerAttack()).toThrow(PlayersTurnError);
+    });
 })

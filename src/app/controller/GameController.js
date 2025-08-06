@@ -1,6 +1,7 @@
 import Player from "../model/Player";
 import GameBoard from "../model/GameBoard";
 import Ship from "../model/Ship";
+import { PlayersTurnError } from "../error/Error";
 
 const game = {
     player1: null,
@@ -44,6 +45,14 @@ const game = {
         const opponent = this.currentTurn === this.player1 ? this.player2 : this.player1;
         opponent.gameBoard.receiveAttack(row, col);
         this.switchTurn();
+    },
+
+    computerAttack() {
+        if(this.currentTurn === this.player1) throw new PlayersTurnError();
+        const row = Math.round(Math.random() * 9);
+        const col = Math.round(Math.random() * 9);
+
+
     }
 }
 
