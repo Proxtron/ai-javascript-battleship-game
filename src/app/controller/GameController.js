@@ -16,8 +16,26 @@ const populateComputerAttacks = (availableComputerAttacks) => {
 }
 
 const getRandomAttackIndex = (availableComputerAttacks) => {
-    return Math.round(Math.random() * (availableComputerAttacks.length - 1));
+    return Math.floor(Math.random() * availableComputerAttacks.length);
 }
+
+const randomShipPlacement = (gameBoard) => {
+    const noOfDirections = 3;
+    for(const shipLength of availableShipLengths) {
+        const randomDirection = Math.floor(Math.random() * (noOfDirections + 1));
+        let randomX;
+        let randomY;
+
+        do {
+            randomX = Math.floor(Math.random() * 10)
+            randomY = Math.floor(Math.random() * 10);
+        } while(!gameBoard.canPlaceShip(randomY, randomX, shipLength, randomDirection));
+
+        gameBoard.placeShip(new Ship(shipLength), randomY, randomX, randomDirection);
+    }
+}
+
+const availableShipLengths = [5, 4, 3, 3, 2];
 
 const game = {
     player1: null,
@@ -26,22 +44,12 @@ const game = {
     availableComputerAttacks: [],
 
     startGame() {
-
         this.player1 = new Player(Player.REAL_TYPE);
         this.player2 = new Player(Player.BOT_TYPE);
         this.currentTurn = this.player1;
         populateComputerAttacks(this.availableComputerAttacks);
-        this.player1.gameBoard.placeShip(new Ship(5), 1, 3, GameBoard.EAST);
-        this.player1.gameBoard.placeShip(new Ship(4), 1, 0, GameBoard.SOUTH);
-        this.player1.gameBoard.placeShip(new Ship(3), 9, 1, GameBoard.EAST);
-        this.player1.gameBoard.placeShip(new Ship(3), 3, 8, GameBoard.WEST);
-        this.player1.gameBoard.placeShip(new Ship(2), 6, 3, GameBoard.EAST);
-
-        this.player2.gameBoard.placeShip(new Ship(5), 1, 5, GameBoard.EAST);
-        this.player2.gameBoard.placeShip(new Ship(4), 1, 0, GameBoard.SOUTH);
-        this.player2.gameBoard.placeShip(new Ship(3), 9, 1, GameBoard.EAST);
-        this.player2.gameBoard.placeShip(new Ship(3), 3, 8, GameBoard.WEST);
-        this.player2.gameBoard.placeShip(new Ship(2), 6, 3, GameBoard.EAST);
+        randomShipPlacement(this.player1.gameBoard);
+        randomShipPlacement(this.player2.gameBoard);
     },
 
     resetGame() {

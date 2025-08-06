@@ -17,7 +17,8 @@ jest.mock("../src/app/model/Player", () => {
             type: type,
             gameBoard: {
                 placeShip: jest.fn(),
-                receiveAttack: jest.fn()
+                receiveAttack: jest.fn(),
+                isShipOutOfBounds: jest.fn(),
             }
         }
     })
