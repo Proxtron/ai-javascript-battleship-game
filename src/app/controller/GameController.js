@@ -3,17 +3,34 @@ import GameBoard from "../model/GameBoard";
 import Ship from "../model/Ship";
 import { PlayersTurnError } from "../error/Error";
 
+
+const populateComputerAttacks = (availableComputerAttacks) => {
+    for(let i = 0; i < 10; i++) {
+        for(let j = 0; j < 10; j++) {
+            availableComputerAttacks.push({
+                x: j,
+                y: i
+            })
+        }
+    }
+}
+
+const getRandomAttackIndex = (availableComputerAttacks) => {
+    return Math.round(Math.random() * (availableComputerAttacks.length - 1));
+}
+
 const game = {
     player1: null,
     player2: null,
     currentTurn: null,
+    availableComputerAttacks: [],
 
     startGame() {
 
         this.player1 = new Player(Player.REAL_TYPE);
         this.player2 = new Player(Player.BOT_TYPE);
         this.currentTurn = this.player1;
-
+        populateComputerAttacks(this.availableComputerAttacks);
         this.player1.gameBoard.placeShip(new Ship(5), 1, 3, GameBoard.EAST);
         this.player1.gameBoard.placeShip(new Ship(4), 1, 0, GameBoard.SOUTH);
         this.player1.gameBoard.placeShip(new Ship(3), 9, 1, GameBoard.EAST);
@@ -31,6 +48,7 @@ const game = {
         this.player1 = null;
         this.player2 = null;
         this.currentTurn = null;
+        this.availableComputerAttacks = [];
     },
 
     switchTurn() {
@@ -49,10 +67,18 @@ const game = {
 
     computerAttack() {
         if(this.currentTurn === this.player1) throw new PlayersTurnError();
-        const row = Math.round(Math.random() * 9);
-        const col = Math.round(Math.random() * 9);
 
+        const randomAttackIndex = getRandomAttackIndex(this.availableComputerAttacks);
+        const randomAttackX = this.availableComputerAttacks[randomAttackIndex].x;
+        const randomAttackY = this.availableComputerAttacks[randomAttackIndex].y;
 
+        this.availableComputerAttacks.splice(randomAttackIndex, 1);
+
+        this.hitCell(randomAttackY, randomAttackX);
+    },
+
+    checkWinner() {
+        return false;
     }
 }
 

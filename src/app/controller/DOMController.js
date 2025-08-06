@@ -17,25 +17,20 @@ function renderGameBoards() {
     gameBoardContainer.innerHTML = "";
 
     const isPlayer1Turn = game.currentTurn === game.player1;
-    player1GameBoard = HumanGameBoardView(game.player1.gameBoard, !isPlayer1Turn);
+    player1GameBoard = HumanGameBoardView(game.player1.gameBoard);
     player1GameBoard.id = "game-board-1";
 
-    player2GameBoard = BotGameBoardView(game.player2.gameBoard, isPlayer1Turn);
+    player2GameBoard = BotGameBoardView(game.player2.gameBoard);
     player2GameBoard.id = "game-board-2";
 
-    addEventListeners(isPlayer1Turn);
+    addEventListeners();
 
     gameBoardContainer.append(player1GameBoard, player2GameBoard);
 }
 
-function addEventListeners(isPlayer1Turn) {
-    if (isPlayer1Turn) {
-        hoverXEffect(player2GameBoard);
-        cellClickHandler(player2GameBoard);
-    } else {
-        hoverXEffect(player1GameBoard);
-        cellClickHandler(player1GameBoard);
-    }
+function addEventListeners() {
+    hoverXEffect(player2GameBoard);
+    cellClickHandler(player2GameBoard);
 }
 
 function hoverXEffect(attackableBoard) {
@@ -60,6 +55,7 @@ function cellClickHandler(attackableBoard) {
                 const row = parseInt(gridCell.dataset.row);
                 const col = parseInt(gridCell.dataset.col);
                 game.hitCell(row, col);
+                game.computerAttack();
                 renderGameBoards();
             });
         }

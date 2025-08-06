@@ -1,7 +1,6 @@
 import game from "../src/app/controller/GameController";
 import Player from "../src/app/model/Player";
 import Ship from "../src/app/model/Ship";
-// import GameBoard from "../src/app/model/GameBoard";
 import { PlayersTurnError } from "../src/app/error/Error";
 
 jest.mock("../src/app/model/Ship", () => {
@@ -20,7 +19,6 @@ jest.mock("../src/app/model/Player", () => {
                 placeShip: jest.fn(),
                 receiveAttack: jest.fn()
             }
-
         }
     })
 });
@@ -70,8 +68,32 @@ describe("game.startGame()", () => {
         
         expect(player1ShipLengthsSorted).toEqual([2, 3, 3, 4, 5]);
         expect(player2ShipLengthsSorted).toEqual([2, 3, 3, 4, 5]);
+    });
+
+
+    test("populates the game's availableComputerAttacks with 100 positions", () => {
+        expect(game.availableComputerAttacks.length).toBe(100);
     })
 });
+
+describe("game.resetGame()", () => {
+    beforeEach(() => {
+        game.resetGame();
+    });
+
+    test("sets players to null", () => {
+        expect(game.player1).toBe(null);
+        expect(game.player2).toBe(null);
+    });
+
+    test("sets current turn to null", () => {
+        expect(game.currentTurn).toBe(null);
+    })
+
+    test("sets availableComputerAttacks to empty array", () => {
+        expect(game.availableComputerAttacks).toEqual([]);
+    })
+})
 
 describe("game.switchTurn()", () => {
     test("switches turn from player 1 to player 2", () => {
@@ -96,9 +118,22 @@ describe("game.hitCell()", () => {
 
 })
 
+
 describe("game.computerAttack()", () => {
     test("calling computerAttack when its the players turn throws PlayersTurnError", () => {
-        game.currentTurn = game.player1;
+        game.currentTurn = game.player1; 
         expect(() => game.computerAttack()).toThrow(PlayersTurnError);
     });
+
+    test("consumes an attack from game.availableComputerAttacks", () => {
+        game.currentTurn = game.player2;
+        game.computerAttack();
+        expect(game.availableComputerAttacks.length).toBe(99);
+    })
+});
+
+describe("game.checkWinner()", () => {
+    test("both players with boards that have unsunk ships returns false", () => {
+        expect(game.checkWinner()).toBe(false);
+    })
 })
