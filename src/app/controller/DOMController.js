@@ -1,11 +1,11 @@
 import game from "./GameController";
 import BotGameBoardView from "../view/BotGameBoardView";
 import HumanGameBoardView from "../view/HumanGameBoardView";
+import PubSub from "./PubSub";
 
 let player1GameBoard;
 let player2GameBoard;
 const gameBoardContainer = document.getElementById("game-board-container");
-
 
 init();
 function init() {
@@ -16,7 +16,6 @@ function init() {
 function renderGameBoards() {
     gameBoardContainer.innerHTML = "";
 
-    const isPlayer1Turn = game.currentTurn === game.player1;
     player1GameBoard = HumanGameBoardView(game.player1.gameBoard);
     player1GameBoard.id = "game-board-1";
 
@@ -48,6 +47,7 @@ function hoverXEffect(attackableBoard) {
 }
 
 function cellClickHandler(attackableBoard) {
+    PubSub.publish("game_finished", game.player1);
     const cells = attackableBoard.querySelectorAll(".grid-cell");
     cells.forEach((gridCell) => {
         if (!gridCell.dataset.cellAttacked && !gridCell.dataset.shipSunk) {
@@ -55,8 +55,16 @@ function cellClickHandler(attackableBoard) {
                 const row = parseInt(gridCell.dataset.row);
                 const col = parseInt(gridCell.dataset.col);
                 game.hitCell(row, col);
-                game.computerAttack();
                 renderGameBoards();
+
+                if(game.checkWinner() === game.player1) {
+                    PubSub.publish("game_finished", game.player1);
+                } else if(game.checkWinner() === game.player2) {
+                    PubSub.publish("game_finished", game.player2);
+                } else if(game.checkWinner() === null) {
+                    game.computerAttack();
+                    
+                }
             });
         }
     })
