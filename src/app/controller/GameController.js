@@ -1,5 +1,4 @@
 import Player from "../model/Player";
-import GameBoard from "../model/GameBoard";
 import Ship from "../model/Ship";
 import { PlayersTurnError } from "../error/Error";
 
@@ -86,7 +85,9 @@ const game = {
     },
 
     checkWinner() {
-        return false;
+        if(this.player1.gameBoard.allShipsSunk) return this.player2;
+        else if(this.player2.gameBoard.allShipsSunk) return this.player1;
+        else return null;
     }
 }
 

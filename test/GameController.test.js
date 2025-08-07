@@ -19,6 +19,7 @@ jest.mock("../src/app/model/Player", () => {
                 placeShip: jest.fn(),
                 receiveAttack: jest.fn(),
                 isShipOutOfBounds: jest.fn(),
+                canPlaceShip: jest.fn().mockReturnValue(true)
             }
         }
     })
@@ -134,7 +135,17 @@ describe("game.computerAttack()", () => {
 });
 
 describe("game.checkWinner()", () => {
-    test("both players with boards that have unsunk ships returns false", () => {
-        expect(game.checkWinner()).toBe(false);
+    test("both players with boards that have unsunk ships returns null", () => {
+        expect(game.checkWinner()).toBe(null);
+    });
+
+    test("player 1 has all ship sunk and returns player2", () => {
+        game.player1.gameBoard.allShipsSunk = true;
+        expect(game.checkWinner()).toBe(game.player2);
+    })
+
+    test("player 2 has all ship sunk and returns player1", () => {
+        game.player2.gameBoard.allShipsSunk = true;
+        expect(game.checkWinner()).toBe(game.player1);
     })
 })

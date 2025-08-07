@@ -80,21 +80,22 @@ export default class GameBoard {
 			let r = row;
 			let c = column;
 
-			if(this.hasShipAt(r, c)) return false;
 			switch(direction) {
 				case GameBoard.NORTH:
-					r--;
+					r = row - i
 					break;
 				case GameBoard.EAST:
-					c++;
+					c = c + i;
 					break;
 				case GameBoard.SOUTH:
-					r++;
+					r = row + i;
 					break;
 				case GameBoard.WEST:
-					c--;
+					c = c - i;
 					break;
 			}
+
+			if(this.hasShipAt(r, c)) return false;
 		}
 
 		return true;

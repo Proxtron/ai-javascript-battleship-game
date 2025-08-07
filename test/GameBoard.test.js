@@ -458,3 +458,14 @@ describe("isShipOutOfBounds()", () => {
 		})
 	});
 })
+
+describe("canPlaceShip()", () => {
+	test("colliding ships return false", () => {
+		gameBoard.placeShip(new Ship(2), 1, 2, GameBoard.SOUTH);
+		expect(gameBoard.canPlaceShip(1, 0, 3, GameBoard.EAST)).toBe(false);
+	});
+	
+	test("non-colliding ships return true", () => {
+		expect(gameBoard.canPlaceShip(1, 0, 2, GameBoard.EAST)).toBe(true);
+	})
+})
