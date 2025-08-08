@@ -5,11 +5,13 @@ import PubSub from "./PubSub";
 
 let player1GameBoard;
 let player2GameBoard;
+const gameScreen = document.getElementById("game-screen");
 const gameBoardContainer = document.getElementById("game-board-container");
 
-init();
+// init();
 function init() {
     game.startGame();
+    gameScreen.classList.remove("hide");
     renderGameBoards();
 }
 

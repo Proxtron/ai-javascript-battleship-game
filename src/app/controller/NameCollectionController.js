@@ -1,11 +1,19 @@
 import Typed from "typed.js";
+import NameCollectionView from "../view/NameCollectionView";
 
-const typed = new Typed("#typed", {
+const nameCollectionScreen = document.getElementById("name-collection-screen");
+const nameCollectionForm = NameCollectionView()
+const welcomeHeading = nameCollectionForm.querySelector("#welcome-heading");
+nameCollectionScreen.append(nameCollectionForm);
+
+
+new Typed("#welcome-heading", {
     strings: [
-        "Hello I am testing typed",
-    ]
-});
+        "Welcome, Commander! What is your name?"
+    ],
+    typeSpeed: 50,
+    cursorChar: "_",
+})
 
-typed.start();
-typed.toggle();
-typed.toggle();
+
+
