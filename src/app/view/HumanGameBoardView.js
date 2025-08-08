@@ -1,10 +1,6 @@
-export default function HumanGameBoardView(gameBoard, isTargetedBoard) {
+export default function HumanGameBoardView(gameBoard) {
     const gameBoardDiv = document.createElement("div");
     gameBoardDiv.classList.add("game-board");
-
-    if(!isTargetedBoard) {
-        gameBoardDiv.classList.add("disabled-game-board")
-    }
 
     const grid = gameBoard.grid;
     for(let i = 0; i < grid.length; i++) {

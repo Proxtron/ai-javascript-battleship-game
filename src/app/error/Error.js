@@ -18,3 +18,10 @@ export class OutOfBoundsError extends Error {
         
     }
 }
+
+export class PlayersTurnError extends Error {
+    constructor() {
+        super("Cannot call computerAttack() when it's the human player's turn")
+        this.name = "PlayersTurnError";
+    }
+}

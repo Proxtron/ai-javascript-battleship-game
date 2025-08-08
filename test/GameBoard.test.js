@@ -398,3 +398,74 @@ describe("shipSunkAt()", () => {
 		expect(gameBoard.shipSunkAt(0, 0)).toBe(true);
 	});
 })
+
+describe("isPointOutOfBounds()", () => {
+	test("passing row 0 column 0 returns false", () => {
+		expect(gameBoard.isPointOutOfBounds(0, 0)).toBe(false);
+	});
+
+	test("passing row -1 column 0 returns true", () => {
+		expect(gameBoard.isPointOutOfBounds(-1, 0)).toBe(true);
+	});
+
+	test("passing row 10 column 5 returns true", () => {
+		expect(gameBoard.isPointOutOfBounds(10, 5)).toBe(true);
+	});
+
+	test("passing row 10 column 10 returns true", () => {
+		expect(gameBoard.isPointOutOfBounds(10, 10)).toBe(true);
+	});
+})
+
+describe("isShipOutOfBounds()", () => {
+
+	describe("passing ship in bounds and doesn't run out of bounds returns false", () => {
+		test("passing ship length 1 at 0, 0 going east", () => {
+			expect(gameBoard.isShipOutOfBounds(0, 0, 1, GameBoard.EAST)).toBe(false);
+		})
+
+		test("passing ship length 4 at 4, 4 going south", () => {
+			expect(gameBoard.isShipOutOfBounds(4, 4, 4, GameBoard.SOUTH)).toBe(false);
+		})
+	})
+	
+
+	describe("passing out of bounds point returns true", () => {
+		test("passing position -1, -1", () => {
+			expect(gameBoard.isShipOutOfBounds(-1, -1, 1, GameBoard.NORTH)).toBe(true);
+		});
+
+		test("passing position 11, 11", () => {
+			expect(gameBoard.isShipOutOfBounds(11, 11, 1, GameBoard.SOUTH)).toBe(true);
+		});
+	});
+
+	describe("place ship in bounds but runs out of bounds returns true", () => {
+		test("ship runs out of bounds south", () => {
+			expect(gameBoard.isShipOutOfBounds(9, 5, 5, GameBoard.SOUTH)).toBe(true);
+		});
+
+		test("ship runs out of bounds east", () => {
+			expect(gameBoard.isShipOutOfBounds(4, 9, 5, GameBoard.EAST)).toBe(true);
+		})
+
+		test("ship runs out of bounds west", () => {
+			expect(gameBoard.isShipOutOfBounds(4, 0, 5, GameBoard.WEST)).toBe(true);
+		})
+
+		test("ship runs out of bounds north", () => {
+			expect(gameBoard.isShipOutOfBounds(0, 4, 5, GameBoard.NORTH)).toBe(true);
+		})
+	});
+})
+
+describe("canPlaceShip()", () => {
+	test("colliding ships return false", () => {
+		gameBoard.placeShip(new Ship(2), 1, 2, GameBoard.SOUTH);
+		expect(gameBoard.canPlaceShip(1, 0, 3, GameBoard.EAST)).toBe(false);
+	});
+	
+	test("non-colliding ships return true", () => {
+		expect(gameBoard.canPlaceShip(1, 0, 2, GameBoard.EAST)).toBe(true);
+	})
+})
