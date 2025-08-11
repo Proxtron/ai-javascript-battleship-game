@@ -1,4 +1,4 @@
-export default function EndGameModalView(name, winnerIsHuman = false) {
+export default function EndGameModalView(name, winnerIsHuman) {
 
     const modal = document.createElement("dialog");
     modal.classList.add("end-game-modal");

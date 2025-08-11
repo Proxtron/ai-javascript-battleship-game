@@ -3,9 +3,12 @@ import NameCollectionView from "../view/NameCollectionView";
 import PubSub from "./PubSub";
 
 const nameCollectionScreen = document.getElementById("name-collection-screen");
+
 export function showNameCollectionScreen() {
+    nameCollectionScreen.innerHTML = "";
     const nameCollectionForm = NameCollectionView()
     nameCollectionScreen.append(nameCollectionForm);
+    nameCollectionScreen.classList.remove("hide");
 
     new Typed("#welcome-heading", {
         strings: [
@@ -19,8 +22,10 @@ export function showNameCollectionScreen() {
         event.preventDefault();
         const formData = new FormData(nameCollectionForm);
         const playerName = formData.get("name")
-        nameCollectionScreen.classList.add("hide");
         PubSub.publish("name_received", playerName);
     });
 }
 
+export function hideNameCollectionScreen() { 
+    nameCollectionScreen.classList.add("hide");
+}

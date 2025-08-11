@@ -164,7 +164,8 @@ main {
 
 .end-game-sub {
     font-size:1.4rem;
-    place-self: center
+    place-self: center;
+    text-align: center;
 }
 
 .close-modal-btn {
