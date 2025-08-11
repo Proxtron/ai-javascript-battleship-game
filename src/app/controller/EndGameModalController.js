@@ -8,8 +8,7 @@ let closeModalBtn;
 let modal;
 
 function showEndGameModal(winningPlayer) {
-
-    modal = EndGameModalView();
+    modal = EndGameModalView(winningPlayer.name);
     modalContainer.innerHTML = "";
     modalContainer.append(modal);
     modal.showModal();

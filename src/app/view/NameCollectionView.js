@@ -7,7 +7,7 @@ export default function NameCollectionView() {
         </div>
 
         <input id="name-input" class="name-input" type="text" name="name" required>
-        <button class="start-game-button">Start</button>
+        <button type="submit" class="start-game-button">Start</button>
     `;
 
     form.innerHTML = template;
