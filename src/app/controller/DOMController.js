@@ -65,7 +65,8 @@ function cellClickHandler(attackableBoard) {
                 const row = parseInt(gridCell.dataset.row);
                 const col = parseInt(gridCell.dataset.col);
                 game.hitCell(row, col);
-
+                renderGameBoards();
+                
                 if(game.checkWinner() === game.player1) {
                     PubSub.publish("game_finished", {winningPlayerName: game.player1.name, winnerIsHuman: true});
                 } else if(game.checkWinner() === game.player2) {
