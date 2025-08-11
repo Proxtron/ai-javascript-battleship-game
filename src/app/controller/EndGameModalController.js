@@ -1,26 +1,21 @@
 import EndGameModalView from "../view/EndGameModalView";
 import PubSub from "./PubSub";
 
-PubSub.subscribe("game_finished", winningPlayer => showEndGameModal(winningPlayer));
-
 const modalContainer = document.getElementById("modal-container");
 let closeModalBtn;
 let modal;
 
-function showEndGameModal(winningPlayer) {
-
-    modal = EndGameModalView();
+export function showEndGameModal(winningPlayerName, winnerIsHuman) {
+    modal = EndGameModalView(winningPlayerName, winnerIsHuman);
     modalContainer.innerHTML = "";
     modalContainer.append(modal);
     modal.showModal();
     
     closeModalBtn = modalContainer.querySelector("#close-modal-btn");
-    addEventListeners();
+    closeModalBtn.addEventListener("click", () => PubSub.publish("play_again"))
 }
 
-function addEventListeners() {
-    closeModalBtn.addEventListener("click", () => {
-        modal.close();
-        modal.remove();
-    });
+export function hideEndGameModal() {
+    modal.close();
+    modal.remove();
 }

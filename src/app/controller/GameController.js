@@ -42,9 +42,9 @@ const game = {
     currentTurn: null,
     availableComputerAttacks: [],
 
-    startGame() {
-        this.player1 = new Player(Player.REAL_TYPE);
-        this.player2 = new Player(Player.BOT_TYPE);
+    startGame(name) {
+        this.player1 = new Player(Player.REAL_TYPE, name);
+        this.player2 = new Player(Player.BOT_TYPE, "Bot");
         this.currentTurn = this.player1;
         populateComputerAttacks(this.availableComputerAttacks);
         randomShipPlacement(this.player1.gameBoard);

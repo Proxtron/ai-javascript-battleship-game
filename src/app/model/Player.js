@@ -6,8 +6,10 @@ export default class Player {
 
     type;
     gameBoard;
-    constructor(type) {
+    name;
+    constructor(type, name) {
         this.type = type;
+        this.name = name;
         this.gameBoard = new GameBoard();
     }
 }

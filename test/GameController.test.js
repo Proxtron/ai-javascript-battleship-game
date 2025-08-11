@@ -39,7 +39,7 @@ beforeEach(() => {
     Ship.mockClear();
     // GameBoard.mockClear();
     game.resetGame();
-    game.startGame();
+    game.startGame("Player");
 })
 
 describe("game.startGame()", () => {
@@ -48,8 +48,8 @@ describe("game.startGame()", () => {
     });
 
     test("creates 1 human player and 1 bot player", () => {
-        expect(Player).toHaveBeenCalledWith(Player.BOT_TYPE);
-        expect(Player).toHaveBeenCalledWith(Player.REAL_TYPE);
+        expect(Player).toHaveBeenCalledWith(Player.BOT_TYPE, "Player");
+        expect(Player).toHaveBeenCalledWith(Player.REAL_TYPE, "Bot");
     })
 
     test("starts with player 1 as starting player", () => {

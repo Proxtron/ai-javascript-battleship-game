@@ -1,4 +1,5 @@
 import "./css/reset.css";
 import "./css/style.css";
-import "./app/controller/DOMController";
-import "./app/controller/EndGameModalController";
+import App from "./app/controller/App";
+
+new App();

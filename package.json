@@ -41,6 +41,7 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
-    "pubsub-js": "^1.9.5"
+    "pubsub-js": "^1.9.5",
+    "typed.js": "^2.1.0"
   }
 }
