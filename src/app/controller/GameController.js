@@ -2,22 +2,6 @@ import Player from "../model/Player";
 import Ship from "../model/Ship";
 import { PlayersTurnError } from "../error/Error";
 
-
-const populateComputerAttacks = (availableComputerAttacks) => {
-    for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
-            availableComputerAttacks.push({
-                x: j,
-                y: i
-            })
-        }
-    }
-}
-
-const getRandomAttackIndex = (availableComputerAttacks) => {
-    return Math.floor(Math.random() * availableComputerAttacks.length);
-}
-
 const randomShipPlacement = (gameBoard) => {
     const noOfDirections = 3;
     for (const shipLength of availableShipLengths) {
@@ -36,16 +20,19 @@ const randomShipPlacement = (gameBoard) => {
 
 const doHuntAttack = (opponent) => {
     console.log("Doing hunt attack");
-    const randomAttackIndex = getRandomAttackIndex(game.availableComputerAttacks);
-    const randomAttackX = game.availableComputerAttacks[randomAttackIndex].x;
-    const randomAttackY = game.availableComputerAttacks[randomAttackIndex].y;
+    let randomX = Math.floor(Math.random() * 10);
+    let randomY = Math.floor(Math.random() * 10);
 
-    game.lastComputerHit = { ...game.availableComputerAttacks[randomAttackIndex] };
-    game.availableComputerAttacks.splice(randomAttackIndex, 1);
-    game.hitCell(randomAttackY, randomAttackX);
+    while(opponent.gameBoard.isAttackedAt(randomY, randomX)) {
+        randomX = Math.floor(Math.random() * 10);
+        randomY = Math.floor(Math.random() * 10);
+    }
 
-    if (opponent.gameBoard.hasShipAt(randomAttackY, randomAttackX)) {
+    game.hitCell(randomY, randomX);
+
+    if (opponent.gameBoard.hasShipAt(randomY, randomX)) {
         game.computerStrategy = STRATEGY_SINK;
+        game.lastComputerHit = {x: randomX, y: randomY};
     }
 }
 
@@ -55,7 +42,21 @@ const doSinkAttack = (opponent) => {
     const previousYAttack = game.lastComputerHit.y;
 
     const nextAttacks = probe(previousXAttack, previousYAttack, opponent);
-    console.log(nextAttacks);
+    const uniqueNext = nextAttacks.filter((attack) => {
+        return !game.computerAttackQueue.includes(attack);
+    });
+
+    game.computerAttackQueue.push(...uniqueNext);
+
+    if(game.computerAttackQueue.length === 0) {
+        game.computerStrategy = STRATEGY_HUNT;
+    } else {
+        const nextInQueue = game.computerAttackQueue.shift();
+        game.hitCell(nextInQueue.y, nextInQueue.y);
+        if (opponent.gameBoard.hasShipAt(nextInQueue.y, nextInQueue.x)) {
+            game.lastComputerHit = {x: nextInQueue.x, y: nextInQueue.y};
+        }
+    }
 }
 
 const probe = (x, y, opponent) => {
@@ -88,15 +89,14 @@ const game = {
     player2: null,
     currentTurn: null,
 
-    availableComputerAttacks: [],
     computerStrategy: STRATEGY_HUNT,
+    computerAttackQueue: [],
     lastComputerHit: null,
 
     startGame(name) {
         this.player1 = new Player(Player.REAL_TYPE, name);
         this.player2 = new Player(Player.BOT_TYPE, "Bot");
         this.currentTurn = this.player1;
-        populateComputerAttacks(this.availableComputerAttacks);
         randomShipPlacement(this.player1.gameBoard);
         randomShipPlacement(this.player2.gameBoard);
     },
@@ -105,7 +105,6 @@ const game = {
         this.player1 = null;
         this.player2 = null;
         this.currentTurn = null;
-        this.availableComputerAttacks = [];
     },
 
     switchTurn() {
