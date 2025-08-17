@@ -19,7 +19,6 @@ const randomShipPlacement = (gameBoard) => {
 }
 
 const doHuntAttack = (opponent) => {
-    console.log("Doing hunt attack");
     let randomX = Math.floor(Math.random() * 10);
     let randomY = Math.floor(Math.random() * 10);
 
@@ -31,33 +30,40 @@ const doHuntAttack = (opponent) => {
     game.hitCell(randomY, randomX);
 
     if (opponent.gameBoard.hasShipAt(randomY, randomX)) {
-        game.computerStrategy = STRATEGY_SINK;
         game.lastComputerHit = {x: randomX, y: randomY};
+        loadQueue(opponent);
     }
 }
 
 const doSinkAttack = (opponent) => {
-    console.log("doing sink attack");
+    const nextInQueue = game.computerAttackQueue.shift();
+    game.hitCell(nextInQueue.y, nextInQueue.x);
+    if (opponent.gameBoard.hasShipAt(nextInQueue.y, nextInQueue.x)) {
+        game.lastComputerHit = {x: nextInQueue.x, y: nextInQueue.y};
+        loadQueue(opponent);
+    }
+}
+
+const loadQueue = (opponent) => {
     const previousXAttack = game.lastComputerHit.x;
     const previousYAttack = game.lastComputerHit.y;
 
     const nextAttacks = probe(previousXAttack, previousYAttack, opponent);
     const uniqueNext = nextAttacks.filter((attack) => {
-        return !game.computerAttackQueue.includes(attack);
+        const attackKey = `${attack.x},${attack.y}`;
+        return !game.computerAttackQueue.some((queuedAttack) => {
+            return `${queuedAttack.x},${queuedAttack.y}` === attackKey;
+        });
     });
 
     game.computerAttackQueue.push(...uniqueNext);
 
-    if(game.computerAttackQueue.length === 0) {
-        game.computerStrategy = STRATEGY_HUNT;
-    } else {
-        const nextInQueue = game.computerAttackQueue.shift();
-        game.hitCell(nextInQueue.y, nextInQueue.y);
-        if (opponent.gameBoard.hasShipAt(nextInQueue.y, nextInQueue.x)) {
-            game.lastComputerHit = {x: nextInQueue.x, y: nextInQueue.y};
-        }
-    }
+    //Clean the queue from stale attacks
+    game.computerAttackQueue.filter((attack) => {
+        return !opponent.gameBoard.isAttackedAt(attack.y, attack.x);
+    });
 }
+
 
 const probe = (x, y, opponent) => {
     const possibleAttacks = [];
@@ -81,15 +87,12 @@ const RIGHT = { x: 1, y: 0 };
 const BOTTOM = { x: 0, y: 1 };
 const LEFT = { x: -1, y: 0 };
 
-const STRATEGY_HUNT = 0;
-const STRATEGY_SINK = 1;
 
 const game = {
     player1: null,
     player2: null,
     currentTurn: null,
 
-    computerStrategy: STRATEGY_HUNT,
     computerAttackQueue: [],
     lastComputerHit: null,
 
@@ -123,9 +126,9 @@ const game = {
 
     computerAttack() {
         if (this.currentTurn === this.player1) throw new PlayersTurnError();
-        if (this.computerStrategy === STRATEGY_HUNT) {
+        if (this.computerAttackQueue.length === 0) {
             doHuntAttack(this.player1);
-        } else if (this.computerStrategy === STRATEGY_SINK) {
+        } else {
             doSinkAttack(this.player1);
         }
     },
