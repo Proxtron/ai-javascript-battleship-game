@@ -184,4 +184,10 @@ export default class GameBoard {
 
 		return this.grid[row][column][0].isSunk;
 	}
+
+	clearGameBoard() {
+		this.ships = [];
+		this.grid = [];
+		this.#initalizeGrid();
+	}
 }

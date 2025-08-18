@@ -2,14 +2,13 @@ import { hideGameScreen, showGameScreen } from "./DOMController";
 import { hideEndGameModal, showEndGameModal } from "./EndGameModalController";
 import {showNameCollectionScreen, hideNameCollectionScreen} from "./NameCollectionController";
 import { showShipPlacementScreen } from "./ShipPlacementController";
-import PubSub from "./PubSub";
 import game from "./GameController";
+import PubSub from "./PubSub";
 
 export default class App {
     constructor() {
         showNameCollectionScreen();
         this.screenFlow();
-        this.gameMessages();
     }
 
     screenFlow() {
@@ -29,11 +28,5 @@ export default class App {
             hideGameScreen();
             showNameCollectionScreen();
         });
-    }
-
-    gameMessages() {
-        PubSub.subscribe("place_ship_randomly", () => {
-            game.placeHumanShipsRandomly();
-        })
     }
 }

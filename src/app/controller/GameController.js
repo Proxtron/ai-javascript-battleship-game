@@ -103,8 +103,11 @@ const game = {
     },
 
     placeHumanShipsRandomly() {
-        console.log("placing randomly");
         randomShipPlacement(this.player1.gameBoard);
+    },
+
+    clearHumanShips() {
+        this.player1.gameBoard.clearGameBoard();
     },
 
     startGame(name) {
