@@ -233,3 +233,15 @@ main {
     font-size: 1.5rem;
     font-weight: 600;
 }
+
+.ship-placement-screen {
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    column-gap: 2rem;
+}
+
+.placement-instructions {
+    color:var(--color-text-primary);
+    font-size:1.2rem;
+}

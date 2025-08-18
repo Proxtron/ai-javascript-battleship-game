@@ -1,6 +1,7 @@
 import { hideGameScreen, showGameScreen } from "./DOMController";
 import { hideEndGameModal, showEndGameModal } from "./EndGameModalController";
 import {showNameCollectionScreen, hideNameCollectionScreen} from "./NameCollectionController";
+import { showShipPlacementScreen } from "./ShipPlacementController";
 import PubSub from "./PubSub";
 
 export default class App {
@@ -9,7 +10,8 @@ export default class App {
 
         PubSub.subscribe("name_received", (_, name) => {
             hideNameCollectionScreen();
-            showGameScreen(name);
+            showShipPlacementScreen(name);
+            // showGameScreen(name);
         });
 
         PubSub.subscribe("game_finished", (_, data) => {
