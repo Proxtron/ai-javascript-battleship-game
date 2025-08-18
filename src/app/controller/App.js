@@ -3,13 +3,19 @@ import { hideEndGameModal, showEndGameModal } from "./EndGameModalController";
 import {showNameCollectionScreen, hideNameCollectionScreen} from "./NameCollectionController";
 import { showShipPlacementScreen } from "./ShipPlacementController";
 import PubSub from "./PubSub";
+import game from "./GameController";
 
 export default class App {
     constructor() {
         showNameCollectionScreen();
+        this.screenFlow();
+        this.gameMessages();
+    }
 
+    screenFlow() {
         PubSub.subscribe("name_received", (_, name) => {
             hideNameCollectionScreen();
+            game.initalizePlayers(name);
             showShipPlacementScreen(name);
             // showGameScreen(name);
         });
@@ -23,5 +29,11 @@ export default class App {
             hideGameScreen();
             showNameCollectionScreen();
         });
+    }
+
+    gameMessages() {
+        PubSub.subscribe("place_ship_randomly", () => {
+            game.placeHumanShipsRandomly();
+        })
     }
 }
