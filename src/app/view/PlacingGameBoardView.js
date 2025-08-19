@@ -5,7 +5,7 @@ export default function PlacingGameBoardView(gameBoard) {
     for(let i = 0; i < gameBoard.sideLength; i++) {
         for(let j = 0; j < gameBoard.sideLength; j++) {
             const cell = document.createElement("div");
-            cell.classList.add("grid-cell")
+            cell.classList.add("grid-cell", "drop-target")
             cell.dataset.row = i;
             cell.dataset.col = j;
 

@@ -256,3 +256,9 @@ main {
     margin:0 auto;
     display: block;
 }
+
+.placeable-grid-cell {
+    width:45px;
+    aspect-ratio: 1/1;
+    display: inline-block;
+}

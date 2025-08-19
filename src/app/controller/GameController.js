@@ -110,9 +110,12 @@ const game = {
         this.player1.gameBoard.clearGameBoard();
     },
 
+    placeSingleHumanShip(length, row, column, direction) {
+        this.player1.gameBoard.placeShip(new Ship(length), row, column, direction);
+    },
+
     startGame(name) {
         this.currentTurn = this.player1;
-        
     },
 
     resetGame() {
