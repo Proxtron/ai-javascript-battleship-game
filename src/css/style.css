@@ -253,7 +253,7 @@ main {
     background-color: var(--color-accent-primary);
     border: 1px solid var(--color-detail-subtle);
     color:var(--color-bg-primary);
-    margin:0 auto;
+    margin:0 auto 2rem auto;
     display: block;
 }
 
