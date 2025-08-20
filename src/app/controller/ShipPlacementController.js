@@ -9,6 +9,7 @@ import GameBoard from "../model/GameBoard";
 const shipPlacementLeftCol = document.getElementById("sp-left-col");
 const shipPlacementRightCol = document.getElementById("sp-right-col");
 let placeShipRandomlyBtn;
+let currentlyDraggingShipLength;
 
 export function showShipPlacementScreen(name) {
 	placeShipRandomlyBtn = PlaceRandomlyButtonView();
@@ -33,15 +34,15 @@ export function showShipPlacementScreen(name) {
 	addEventListeners();
 }
 
-function renderPlacementGrid(gameBoard) {
+function renderPlacementGrid(gameBoard, dragOverData) {
 	shipPlacementRightCol.innerHTML = "";
-	shipPlacementRightCol.append(PlacingGameBoardView(gameBoard));
+	shipPlacementRightCol.append(PlacingGameBoardView(gameBoard, dragOverData));
+	addDropTargetEventListeners();
+}
 
-    shipPlacementRightCol.querySelectorAll(".drop-target").forEach((cell) => {
-		cell.addEventListener("dragover", dragOverHandler);
-	});
-
+function addDropTargetEventListeners() {
 	shipPlacementRightCol.querySelectorAll(".drop-target").forEach((cell) => {
+		cell.addEventListener("dragover", dragOverHandler);
 		cell.addEventListener("drop", dropHandler);
 	});
 }
@@ -61,21 +62,52 @@ function addEventListeners() {
 function dragStartHandler(event) {
 	const shipLength = event.srcElement.dataset.length;
 	event.dataTransfer.setData("length", shipLength);
+	currentlyDraggingShipLength = shipLength;
 }
 
 function dragOverHandler(event) {
-	event.preventDefault();
-}
-
-function dropHandler(event) {
 	event.preventDefault();
 
 	const dropTarget = event.target;
 	const placeX = parseInt(dropTarget.dataset.col);
 	const placeY = parseInt(dropTarget.dataset.row);
-	const length = parseInt(event.dataTransfer.getData("length"));
+	const length = parseInt(currentlyDraggingShipLength);
 
-	game.placeSingleHumanShip(length, placeY, placeX, GameBoard.EAST);
+	const dragOverData = game.player1.gameBoard.getDragOverData(
+		placeY,
+		placeX,
+		length,
+		GameBoard.EAST,
+	);
 
-	renderPlacementGrid(game.player1.gameBoard);
+
+	updateDragOverVisuals(dragOverData);
+}
+
+function dropHandler(event) {
+	event.preventDefault();
+
+	try {
+		const dropTarget = event.target;
+		const placeX = parseInt(dropTarget.dataset.col);
+		const placeY = parseInt(dropTarget.dataset.row);
+		const length = parseInt(event.dataTransfer.getData("length"));
+
+		game.placeSingleHumanShip(length, placeY, placeX, GameBoard.EAST);
+		renderPlacementGrid(game.player1.gameBoard);
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+function updateDragOverVisuals(dragOverData) {
+    shipPlacementRightCol.querySelectorAll(".drop-target").forEach((cell) => {
+        cell.classList.remove("can-drop", "cannot-drop");
+    });
+
+    dragOverData.forEach((cellData) => {
+        const cell = shipPlacementRightCol.querySelector(`[data-col="${cellData.x}"][data-row="${cellData.y}"]`);
+
+        if(cell) cellData.canPlace ? cell.classList.add("can-drop") : cell.classList.add("cannot-drop");
+    });
 }

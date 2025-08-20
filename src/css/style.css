@@ -262,3 +262,11 @@ main {
     aspect-ratio: 1/1;
     display: inline-block;
 }
+
+.can-drop {
+    background-color: var(--color-accent-primary);
+}
+
+.cannot-drop {
+    background-color: var(--color-accent-secondary);
+}
