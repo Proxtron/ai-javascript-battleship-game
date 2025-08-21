@@ -10,8 +10,7 @@ const gameScreen = document.getElementById("game-screen");
 const gameBoardContainer = document.getElementById("game-board-container");
 const playerNamesContainer = document.getElementById("player-names-container");
 
-export function showGameScreen(name) {
-    game.startGame(name);
+export function showGameScreen() {
     gameScreen.classList.remove("hide");
     renderGameBoards();
 }

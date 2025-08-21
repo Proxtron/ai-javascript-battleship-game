@@ -183,10 +183,6 @@ main {
     color:var(--color-text-primary);
 }
 
-.hide {
-    display:none;
-}
-
 .welcome-heading, .welcome-heading + .typed-cursor{
     font-size:3rem;
     font-weight: 500;
@@ -295,4 +291,8 @@ main {
 
 .block-grid-cell {
     display: block;
+}
+
+.hide {
+    display:none;
 }

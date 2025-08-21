@@ -3,24 +3,52 @@ import Typed from "typed.js";
 import PlacingGameBoardView from "../view/PlacingGameBoardView";
 import PlaceRandomlyButtonView from "../view/PlaceRandomlyButtonView";
 import game from "./GameController";
-import PlaceableShipView from "../view/PlaceableShipView";
 import GameBoard from "../model/GameBoard";
 import RotateButtonView from "../view/RotateButtonView";
 import ShipContainerView from "../view/ShipContainerView";
+import StartGameButtonView from "../view/StartGameButtonView";
+import PubSub from "./PubSub";
 
 const shipPlacementScreen = document.getElementById("ship-placement-screen");
 const shipPlacementLeftCol = document.getElementById("sp-left-col");
 const shipPlacementRightCol = document.getElementById("sp-right-col");
 const shipPlacementTopSection = document.getElementById("sp-top-section");
+const shipPlacementBottomSection = document.getElementById("sp-bot-section");
 const shipContainer = document.getElementById("ship-container");
+
 let placeShipRandomlyBtn;
 let rotateBtn;
+let startGameButton;
 let currentlyDraggingShipLength;
 let currentShipOrientation = GameBoard.EAST;
 let remainingShipsLengths = [5, 4, 3, 3, 2];
 
+function init() {
+    remainingShipsLengths = [5, 4, 3, 3, 2];
+    currentShipOrientation = GameBoard.EAST;
+}
+
 export function showShipPlacementScreen(name) {
-	placeShipRandomlyBtn = PlaceRandomlyButtonView();
+    init();
+
+    shipPlacementScreen.classList.remove("hide")
+
+    renderShipPlacementTopSection(name);
+    renderShipPlacementBottomSection();
+    renderShipContainer();
+	renderPlacementGrid(game.player1.gameBoard);
+
+	addEventListeners();
+}
+
+export function hideShipPlacementScreen() {
+    shipPlacementScreen.classList.add("hide");
+}
+
+function renderShipPlacementTopSection(name) {
+    shipPlacementTopSection.innerHTML = "";
+
+    placeShipRandomlyBtn = PlaceRandomlyButtonView();
     rotateBtn = RotateButtonView();
  
     shipPlacementTopSection.append(
@@ -29,17 +57,18 @@ export function showShipPlacementScreen(name) {
         rotateBtn,
     );
 
-    renderShipContainer();
-	renderPlacementGrid(game.player1.gameBoard);
-
-	new Typed("#placement-instructions", {
+    new Typed("#placement-instructions", {
 		strings: [
 			`It's time to place your ships, ${name}! Drag and drop your ships onto the grid.`,
 		],
 		showCursor: false,
 	});
+}
 
-	addEventListeners();
+function renderShipPlacementBottomSection() {
+    shipPlacementBottomSection.innerHTML = "";
+    startGameButton = StartGameButtonView();
+    shipPlacementBottomSection.append(startGameButton);
 }
 
 function renderPlacementGrid(gameBoard, dragOverData) {
@@ -56,6 +85,7 @@ function renderShipContainer() {
 
     shipContainer.querySelectorAll(".draggable").forEach((ship) => {
 		ship.addEventListener("dragstart", dragStartHandler);
+        ship.addEventListener("dragend", () => updateDragOverVisuals());
 	});
 }
 
@@ -77,6 +107,8 @@ function addEventListeners() {
 	});
 
     rotateBtn.addEventListener("click", rotateBtnHandler);
+
+    startGameButton.addEventListener("click", startGameHandler);
 }
 
 function rotateBtnHandler(event) {
@@ -130,7 +162,7 @@ function dropHandler(event) {
 	}
 }
 
-function updateDragOverVisuals(dragOverData) {
+function updateDragOverVisuals(dragOverData = []) {
     shipPlacementRightCol.querySelectorAll(".drop-target").forEach((cell) => {
         cell.classList.remove("can-drop", "cannot-drop");
     });
@@ -145,4 +177,8 @@ function updateDragOverVisuals(dragOverData) {
 function updateRemainingShips(length) {
     const indexOfLength = remainingShipsLengths.indexOf(length);
     remainingShipsLengths.splice(indexOfLength, 1);
+}
+
+function startGameHandler() {
+    PubSub.publish("start_game");
 }

@@ -100,6 +100,7 @@ const game = {
         this.player1 = new Player(Player.REAL_TYPE, humanPlayerName);
         this.player2 = new Player(Player.BOT_TYPE, "Bot");
         randomShipPlacement(this.player2.gameBoard);
+        this.currentTurn = this.player1;
     },
 
     placeHumanShipsRandomly() {
@@ -114,14 +115,12 @@ const game = {
         this.player1.gameBoard.placeShip(new Ship(length), row, column, direction);
     },
 
-    startGame(name) {
-        this.currentTurn = this.player1;
-    },
-
     resetGame() {
         this.player1 = null;
         this.player2 = null;
         this.currentTurn = null;
+        this.computerAttackQueue = [];
+        this.lastComputerHit = null;
     },
 
     switchTurn() {
