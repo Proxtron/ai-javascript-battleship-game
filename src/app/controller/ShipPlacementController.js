@@ -5,28 +5,35 @@ import PlaceRandomlyButtonView from "../view/PlaceRandomlyButtonView";
 import game from "./GameController";
 import PlaceableShipView from "../view/PlaceableShipView";
 import GameBoard from "../model/GameBoard";
+import RotateButtonView from "../view/RotateButtonView";
+import ShipContainerView from "../view/ShipContainerView";
 
+const shipPlacementScreen = document.getElementById("ship-placement-screen");
 const shipPlacementLeftCol = document.getElementById("sp-left-col");
 const shipPlacementRightCol = document.getElementById("sp-right-col");
+const shipPlacementTopSection = document.getElementById("sp-top-section");
+const shipContainer = document.getElementById("ship-container");
 let placeShipRandomlyBtn;
+let rotateBtn;
 let currentlyDraggingShipLength;
+let currentShipOrientation = GameBoard.EAST;
 
 export function showShipPlacementScreen(name) {
 	placeShipRandomlyBtn = PlaceRandomlyButtonView();
-	shipPlacementLeftCol.append(
-		PlacementInstructionsView(name),
+    rotateBtn = RotateButtonView();
+ 
+    shipPlacementTopSection.append(
+        PlacementInstructionsView(name),
 		placeShipRandomlyBtn,
-		PlaceableShipView(5),
-		PlaceableShipView(4),
-		PlaceableShipView(3),
-		PlaceableShipView(3),
-		PlaceableShipView(2),
-	);
+        rotateBtn,
+    );
+
+    renderShipContainer(currentShipOrientation);
 	renderPlacementGrid(game.player1.gameBoard);
 
 	new Typed("#placement-instructions", {
 		strings: [
-			`It's time to place your ships, ${name}! Drag and drop and press "R" to rotate.`,
+			`It's time to place your ships, ${name}! Drag and drop your ships onto the grid.`,
 		],
 		showCursor: false,
 	});
@@ -38,6 +45,17 @@ function renderPlacementGrid(gameBoard, dragOverData) {
 	shipPlacementRightCol.innerHTML = "";
 	shipPlacementRightCol.append(PlacingGameBoardView(gameBoard, dragOverData));
 	addDropTargetEventListeners();
+}
+
+function renderShipContainer(currentShipOrientation) {
+    shipContainer.innerHTML = "";
+    shipContainer.append(
+        ShipContainerView(currentShipOrientation)
+    );
+
+    shipContainer.querySelectorAll(".draggable").forEach((ship) => {
+		ship.addEventListener("dragstart", dragStartHandler);
+	});
 }
 
 function addDropTargetEventListeners() {
@@ -54,9 +72,14 @@ function addEventListeners() {
 		renderPlacementGrid(game.player1.gameBoard);
 	});
 
-	shipPlacementLeftCol.querySelectorAll(".draggable").forEach((ship) => {
-		ship.addEventListener("dragstart", dragStartHandler);
-	});
+    rotateBtn.addEventListener("click", rotateBtnHandler);
+}
+
+function rotateBtnHandler(event) {
+    currentShipOrientation = currentShipOrientation === GameBoard.EAST 
+        ? GameBoard.SOUTH 
+        : GameBoard.EAST;
+    renderShipContainer(currentShipOrientation);
 }
 
 function dragStartHandler(event) {

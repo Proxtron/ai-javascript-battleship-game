@@ -270,3 +270,29 @@ main {
 .cannot-drop {
     background-color: var(--color-accent-secondary);
 }
+
+.rotate-icon {
+    width:2.5rem;
+    cursor:pointer;
+    margin-left: auto;
+}
+
+.ship-container {
+    display:grid;
+}
+
+.horizontal-ship-container {
+    grid-template-rows: repeat(5, 1fr);
+}
+
+.vertical-ship-container {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.inline-grid-cell {
+    display: inline-block;
+}
+
+.block-grid-cell {
+    display: block;
+}
