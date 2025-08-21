@@ -17,6 +17,7 @@ let placeShipRandomlyBtn;
 let rotateBtn;
 let currentlyDraggingShipLength;
 let currentShipOrientation = GameBoard.EAST;
+let remainingShipsLengths = [5, 4, 3, 3, 2];
 
 export function showShipPlacementScreen(name) {
 	placeShipRandomlyBtn = PlaceRandomlyButtonView();
@@ -28,7 +29,7 @@ export function showShipPlacementScreen(name) {
         rotateBtn,
     );
 
-    renderShipContainer(currentShipOrientation);
+    renderShipContainer();
 	renderPlacementGrid(game.player1.gameBoard);
 
 	new Typed("#placement-instructions", {
@@ -47,10 +48,10 @@ function renderPlacementGrid(gameBoard, dragOverData) {
 	addDropTargetEventListeners();
 }
 
-function renderShipContainer(currentShipOrientation) {
+function renderShipContainer() {
     shipContainer.innerHTML = "";
     shipContainer.append(
-        ShipContainerView(currentShipOrientation)
+        ShipContainerView(currentShipOrientation, remainingShipsLengths)
     );
 
     shipContainer.querySelectorAll(".draggable").forEach((ship) => {
@@ -70,6 +71,9 @@ function addEventListeners() {
 		game.clearHumanShips();
 		game.placeHumanShipsRandomly();
 		renderPlacementGrid(game.player1.gameBoard);
+        
+        remainingShipsLengths = [];
+        renderShipContainer();
 	});
 
     rotateBtn.addEventListener("click", rotateBtnHandler);
@@ -79,7 +83,7 @@ function rotateBtnHandler(event) {
     currentShipOrientation = currentShipOrientation === GameBoard.EAST 
         ? GameBoard.SOUTH 
         : GameBoard.EAST;
-    renderShipContainer(currentShipOrientation);
+    renderShipContainer();
 }
 
 function dragStartHandler(event) {
@@ -118,6 +122,9 @@ function dropHandler(event) {
 
 		game.placeSingleHumanShip(length, placeY, placeX, currentShipOrientation);
 		renderPlacementGrid(game.player1.gameBoard);
+
+        updateRemainingShips(length);
+        renderShipContainer();
 	} catch (error) {
 		console.log(error);
 	}
@@ -133,4 +140,9 @@ function updateDragOverVisuals(dragOverData) {
 
         if(cell) cellData.canPlace ? cell.classList.add("can-drop") : cell.classList.add("cannot-drop");
     });
+}
+
+function updateRemainingShips(length) {
+    const indexOfLength = remainingShipsLengths.indexOf(length);
+    remainingShipsLengths.splice(indexOfLength, 1);
 }
