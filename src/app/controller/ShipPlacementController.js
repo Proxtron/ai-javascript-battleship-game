@@ -100,7 +100,7 @@ function dragOverHandler(event) {
 		placeY,
 		placeX,
 		length,
-		GameBoard.EAST,
+		currentShipOrientation,
 	);
 
 
@@ -116,7 +116,7 @@ function dropHandler(event) {
 		const placeY = parseInt(dropTarget.dataset.row);
 		const length = parseInt(event.dataTransfer.getData("length"));
 
-		game.placeSingleHumanShip(length, placeY, placeX, GameBoard.EAST);
+		game.placeSingleHumanShip(length, placeY, placeX, currentShipOrientation);
 		renderPlacementGrid(game.player1.gameBoard);
 	} catch (error) {
 		console.log(error);
