@@ -296,3 +296,24 @@ main {
 .hide {
     display:none;
 }
+
+.toast-container {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+}
+
+.toast {
+    background-color: var(--color-accent-secondary);
+    padding: .75rem 1.25rem;
+    color: var(--color-bg-primary);
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity .75s, height .75s ;
+    height: 0;
+}
+
+.toast-show {
+    opacity: 1;
+    height:auto;
+}

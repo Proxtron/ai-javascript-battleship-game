@@ -8,6 +8,7 @@ import RotateButtonView from "../view/RotateButtonView";
 import ShipContainerView from "../view/ShipContainerView";
 import StartGameButtonView from "../view/StartGameButtonView";
 import PubSub from "./PubSub";
+import showToast from "./ToastController";
 
 const shipPlacementScreen = document.getElementById("ship-placement-screen");
 const shipPlacementLeftCol = document.getElementById("sp-left-col");
@@ -180,5 +181,9 @@ function updateRemainingShips(length) {
 }
 
 function startGameHandler() {
-    PubSub.publish("start_game");
+	if(remainingShipsLengths.length === 0) {
+		PubSub.publish("start_game");
+	} else {
+		showToast("Place all your ships before starting the game!");
+	}
 }
