@@ -96,18 +96,31 @@ const game = {
     computerAttackQueue: [],
     lastComputerHit: null,
 
-    startGame(name) {
-        this.player1 = new Player(Player.REAL_TYPE, name);
+    initalizePlayers(humanPlayerName) {
+        this.player1 = new Player(Player.REAL_TYPE, humanPlayerName);
         this.player2 = new Player(Player.BOT_TYPE, "Bot");
-        this.currentTurn = this.player1;
-        randomShipPlacement(this.player1.gameBoard);
         randomShipPlacement(this.player2.gameBoard);
+        this.currentTurn = this.player1;
+    },
+
+    placeHumanShipsRandomly() {
+        randomShipPlacement(this.player1.gameBoard);
+    },
+
+    clearHumanShips() {
+        this.player1.gameBoard.clearGameBoard();
+    },
+
+    placeSingleHumanShip(length, row, column, direction) {
+        this.player1.gameBoard.placeShip(new Ship(length), row, column, direction);
     },
 
     resetGame() {
         this.player1 = null;
         this.player2 = null;
         this.currentTurn = null;
+        this.computerAttackQueue = [];
+        this.lastComputerHit = null;
     },
 
     switchTurn() {

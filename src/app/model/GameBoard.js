@@ -184,4 +184,43 @@ export default class GameBoard {
 
 		return this.grid[row][column][0].isSunk;
 	}
+
+	clearGameBoard() {
+		this.ships = [];
+		this.grid = [];
+		this.#initalizeGrid();
+	}
+
+	getDragOverData(row, column, length, direction) {
+		const canPlace = this.canPlaceShip(row, column, length, direction);
+		const dragOverData = [];
+
+		for(let i = 0; i < length; i++) {
+			let r = row;
+			let c = column;
+
+			switch(direction) {
+				case GameBoard.NORTH:
+					r = row - i
+					break;
+				case GameBoard.EAST:
+					c = column + i;
+					break;
+				case GameBoard.SOUTH:
+					r = row + i;
+					break;
+				case GameBoard.WEST:
+					c = column - i;
+					break;
+			}
+
+			dragOverData.push({
+				x: c,
+				y: r,
+				canPlace: canPlace
+			});
+		}
+
+		return dragOverData;
+	}
 }

@@ -16,7 +16,7 @@ export default function EndGameModalView(name, winnerIsHuman) {
     modal.innerHTML = `
         ${endGameTag}
         ${endGameSub}
-        <button id="close-modal-btn" class="close-modal-btn" >Play again</button>
+        <button id="close-modal-btn" class="close-modal-btn btn" >Play again</button>
     `
     return modal;
 }
