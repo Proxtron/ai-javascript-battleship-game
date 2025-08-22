@@ -317,3 +317,7 @@ main {
     opacity: 1;
     height:auto;
 }
+
+.game-screen {
+    margin-bottom: 3rem;
+}

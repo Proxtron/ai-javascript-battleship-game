@@ -5,8 +5,8 @@ const modalContainer = document.getElementById("modal-container");
 let closeModalBtn;
 let modal;
 
-export function showEndGameModal(winningPlayerName, winnerIsHuman) {
-    modal = EndGameModalView(winningPlayerName, winnerIsHuman);
+export function showEndGameModal(humanPlayerName, winnerIsHuman) {
+    modal = EndGameModalView(humanPlayerName, winnerIsHuman);
     modalContainer.innerHTML = "";
     modalContainer.append(modal);
     modal.showModal();

@@ -61,20 +61,28 @@ function cellClickHandler(attackableBoard) {
     cells.forEach((gridCell) => {
         if (!gridCell.dataset.cellAttacked && !gridCell.dataset.shipSunk) {
             gridCell.addEventListener("click", () => {
+
                 const row = parseInt(gridCell.dataset.row);
                 const col = parseInt(gridCell.dataset.col);
+
+                //Human player turn to hit. Hit cell, render, check end of game
                 game.hitCell(row, col);
                 renderGameBoards();
-                
-                if(game.checkWinner() === game.player1) {
-                    PubSub.publish("game_finished", {winningPlayerName: game.player1.name, winnerIsHuman: true});
-                } else if(game.checkWinner() === game.player2) {
-                    PubSub.publish("game_finished", {winningPlayerName: game.player2.name, winnerIsHuman: false});
-                } else if(game.checkWinner() === null) {
-                    game.computerAttack();
-                    renderGameBoards();
-                }
+                checkEndOfGame();
+
+                //Bot player turn to hit. Hit cell, render, check end of game
+                game.computerAttack();
+                renderGameBoards();
+                checkEndOfGame();
             });
         }
     })
+}
+
+function checkEndOfGame() {
+    if(game.checkWinner() === game.player1) {
+        PubSub.publish("game_finished", {humanPlayerName: game.player1.name, winnerIsHuman: true});
+    } else if(game.checkWinner() === game.player2) {
+        PubSub.publish("game_finished", {humanPlayerName: game.player1.name, winnerIsHuman: false});
+    }
 }

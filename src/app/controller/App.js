@@ -25,7 +25,7 @@ export default class App {
         });
 
         PubSub.subscribe("game_finished", (_, data) => {
-            showEndGameModal(data.winningPlayerName, data.winnerIsHuman);
+            showEndGameModal(data.humanPlayerName, data.winnerIsHuman);
         });
 
         PubSub.subscribe("play_again", () => {
