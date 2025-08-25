@@ -1,6 +1,10 @@
 # AI-Battleship
 
+![App Demo](./src/assets/demo.gif)
+
 A modern, interactive Battleship game built with vanilla JavaScript, featuring an AI opponent and a beautiful nautical-themed UI.
+
+[Click to Play](https://proxtron.github.io/ai-javascript-battleship-game/)
 
 ## Learning Project
 
