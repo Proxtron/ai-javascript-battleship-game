@@ -4,15 +4,13 @@ import HumanGameBoardView from "../view/HumanGameBoardView";
 import PubSub from "./PubSub";
 import PlayerNamesView from "../view/PlayerNamesView";
 
-let player1GameBoard;
-let player2GameBoard;
 const gameScreen = document.getElementById("game-screen");
 const gameBoardContainer = document.getElementById("game-board-container");
 const playerNamesContainer = document.getElementById("player-names-container");
 
 export function showGameScreen() {
     gameScreen.classList.remove("hide");
-    renderGameBoards();
+    renderGameBoards(false);
 }
 
 export function hideGameScreen() {
@@ -20,30 +18,30 @@ export function hideGameScreen() {
     game.resetGame();
 }
 
-function renderGameBoards() {
+function renderGameBoards(botIsThinking) {
     gameBoardContainer.innerHTML = "";
     playerNamesContainer.innerHTML = "";
 
-    player1GameBoard = HumanGameBoardView(game.player1.gameBoard);
+    const player1GameBoard = HumanGameBoardView(game.player1.gameBoard);
     player1GameBoard.id = "game-board-1";
 
-    player2GameBoard = BotGameBoardView(game.player2.gameBoard);
+    const player2GameBoard = BotGameBoardView(game.player2.gameBoard);
     player2GameBoard.id = "game-board-2";
 
-    playerNamesContainer.innerHTML = PlayerNamesView(game.player1, game.player2);
-
-    addEventListeners();
+    playerNamesContainer.innerHTML = PlayerNamesView(game.player1, game.player2, botIsThinking);
 
     gameBoardContainer.append(player1GameBoard, player2GameBoard);
+    addEventListeners();
 }
 
 function addEventListeners() {
-    hoverXEffect(player2GameBoard);
-    cellClickHandler(player2GameBoard);
+    hoverXEffect();
+    cellClickHandler();
 }
 
-function hoverXEffect(attackableBoard) {
-    const cells = attackableBoard.querySelectorAll(".grid-cell");
+function hoverXEffect() {
+    const botGameBoard = document.getElementById("game-board-2");
+    const cells = botGameBoard.querySelectorAll(".grid-cell");
     cells.forEach((gridCell) => {
         if (!gridCell.dataset.cellAttacked && !gridCell.dataset.shipSunk) {
             gridCell.addEventListener("pointerenter", () => {
@@ -56,8 +54,9 @@ function hoverXEffect(attackableBoard) {
     });
 }
 
-function cellClickHandler(attackableBoard) {
-    const cells = attackableBoard.querySelectorAll(".grid-cell");
+function cellClickHandler() {
+    const botGameBoard = document.getElementById("game-board-2");
+    const cells = botGameBoard.querySelectorAll(".grid-cell");
     cells.forEach((gridCell) => {
         if (!gridCell.dataset.cellAttacked && !gridCell.dataset.shipSunk) {
             gridCell.addEventListener("click", () => {
@@ -67,16 +66,41 @@ function cellClickHandler(attackableBoard) {
 
                 //Human player turn to hit. Hit cell, render, check end of game
                 game.hitCell(row, col);
-                renderGameBoards();
+                renderGameBoards(false);
                 checkEndOfGame();
 
                 //Bot player turn to hit. Hit cell, render, check end of game
-                game.computerAttack();
-                renderGameBoards();
-                checkEndOfGame();
+                renderGameBoards(true);
+
+                //Bot "thinks" randomly between 1.0s and 1.5s
+                const randomBotThinkingTime = ((Math.random() * .5) + 1.0) * 1000;
+
+                disableCellClicks();
+                setTimeout(() => {
+                    game.computerAttack();
+                    renderGameBoards(false);
+                    checkEndOfGame();
+                }, randomBotThinkingTime)
             });
         }
     })
+}
+
+function disableCellClicks() {
+    const botGameBoard = document.getElementById("game-board-2");
+    const cells = botGameBoard.querySelectorAll(".grid-cell");
+    cells.forEach((gridCell) => {
+        gridCell.style.pointerEvents = "none";
+        gridCell.style.cursor = "not-allowed";
+    });
+}
+
+function enableCellClicks() {
+    const botGameBoard = document.getElementById("game-board-2");
+    const cells = botGameBoard.querySelectorAll(".grid-cell");
+    cells.forEach((gridCell) => {
+        gridCell.style.pointerEvents = "auto";
+    });
 }
 
 function checkEndOfGame() {

@@ -321,3 +321,20 @@ main {
 .game-screen {
     margin-bottom: 3rem;
 }
+
+.bot-emoji {
+    position: relative;
+}
+
+.thinking::after {
+    content: "";
+    width:75px;
+    height:75px;
+    position: absolute;
+    display:block;
+    background-image: url("../assets/thinking.gif");
+    background-size: contain;
+    background-repeat:no-repeat;
+    left:50px;
+    top:-50px;
+}
