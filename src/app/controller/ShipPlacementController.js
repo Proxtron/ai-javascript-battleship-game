@@ -147,6 +147,11 @@ function dragOverHandler(event) {
 function dropHandler(event) {
 	event.preventDefault();
 
+	//Prevents unintended elements from triggering a drop
+	if(!event.dataTransfer.getData("length")) {
+		return;
+	}
+
 	try {
 		const dropTarget = event.target;
 		const placeX = parseInt(dropTarget.dataset.col);
