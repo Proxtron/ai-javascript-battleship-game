@@ -1,4 +1,4 @@
-# AI-Battleship
+# Battleship.js
 
 ![App Demo](./src/assets/demo.gif)
 
